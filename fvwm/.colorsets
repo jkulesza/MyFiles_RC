@@ -1,0 +1,37 @@
+###################################################################
+### Colorsets
+
+CleanupColorsets
+DefaultColorset -1
+ColormapFocus FollowsFocus
+
+## Menu Colorset
+# Transluscent
+#Colorset 0 fg #ffffff, fgsh #000000, bg #f6f6f6, sh #444444, hi #f6f6f6, Translucent #2e3c4b 60
+#Colorset 1 fg #000000, fgsh #b5b7b8, bg #ffffff, hi #ffffff, sh #9a9a9a, Translucent #dce0e7 50
+# Non-Transluscent
+Colorset 0 fg #ffffff, fgsh #000000, bg #000000, sh #444444, hi #f6f6f6
+Colorset 1 fg #cccccc, fgsh #222222, bg #000000, hi #ffffff, sh #9a9a9a
+
+## Titlebar Colorset
+Colorset 10 BGradient 64 rgb:3/48/6 rgb:6/9/c
+Colorset 11 BGradient 64 black grey30
+Colorset 12 fg white, bg steelblue 
+
+## Default window styles Colorsets
+Colorset 20 fg #f6f6f6, bg black, IconAlpha 40
+Colorset 21 fg #f6f6f6, bg black, fgsh black, IconAlpha 100
+Colorset 22 fg #ffffff, bg #000000
+
+## Dock Colorsets
+Colorset 30 fg white, bg black, sh black, RootTransparent, Tint black 60
+Colorset 31 fg white, bg black, sh black, RootTransparent, Tint black 60, \
+            Shape $[fvwm_shapes]/dock_shape.xpm
+
+## Pager Colorset
+Colorset 40 fg #f6f6f6, bg black, RootTransparent, Tint #39516b 30
+Colorset 41 fg #f6f6f6, bg black, Noshape, RootTransparent, Tint #b7bec5 20
+Colorset 42 fg #f6f6f6, bg black, RootTransparent, Tint white 50
+Colorset 43 fg #f6f6f6, bg black, Noshape, RootTransparent, Tint #b7bec5 50
+
+

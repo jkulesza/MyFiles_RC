@@ -1,0 +1,86 @@
+set pager_context=1
+set pager_index_lines=6                 #show a mini-index in pager
+set menu_scroll
+set pgp_verify_sig=no                   #dont show pgp in pager
+set status_on_top                       #put status line at top
+set sort=threads                        #sort by message threads in index
+
+set status_format=" %r %b %f %n      Del %d      Msgs %m %l %> (%P)"
+set pager_format="%-10.10i %[!%a %b %d %R]"
+set date_format="!%H:%M %a %d %b     "
+set index_format="%4C %Z %[%b%d] %-15.15F %s"
+set folder_format="%2C %t %8s %d %N %f"
+
+set record="$HOME/.mail/sent"            #sent mail is saved here
+set delete=yes                          #delete without prompting
+set include=yes                         #quote msg in reply
+set fast_reply=yes                      #no prompting on reply
+set beep=no                             #no noise
+set markers=no                          #no + on wrapped lines
+set confirmappend=no                    #no prompt for save to =keep
+set to_chars=" +TCF"                    #no L for mail_list
+
+set folder = $HOME/.mail
+#mailboxes =default
+#mailboxes =junk
+#mailboxes =spam
+#mailboxes =keep
+
+bind pager h display-toggle-weed        #toggle headers with h key
+bind pager j next-line
+bind pager k previous-line
+
+#run fetchmail by hitting key of G
+#macro index G "!fetchmail -a -m 'procmail -d %T'\r"
+#macro pager G "!fetchmail -a -m 'procmail -d %T'\r"
+
+# default list of header fields to weed out when displaying mail
+# #ignore them all and then unignore what you want to see
+ignore *
+unignore  Date To From: Subject X-Mailer Organization User-Agent
+hdr_order Date From To Subject X-Mailer User-Agent Organization
+
+#color quoted green  default
+#color quoted1 magenta blue
+#color quoted2 yellow default
+#color quoted3 red default
+#color signature cyan cyan
+
+# This color setup is copied from /etc/mutt/Muttrc.color
+# Comment it out if you want the default colors in /etc/mutt/Muttrc
+
+#color   hdrdefault      brightcyan      blue
+#color   header          brightwhite     blue "^from:"
+#color   header          brightwhite     blue   "^subject:"
+#
+#color   quoted          brightgreen     blue
+#color   signature       brightwhite     blue
+#
+#color   indicator       blue            green
+#
+#color   error           red             black
+#mono    error           bold
+#color   status          black cyan
+#mono    status          bold
+#color   tree            yellow          blue
+#
+#color   tilde           brightmagenta   blue
+#color   body            brightwhite     blue    "[-a-z_0-9.]+@[-a-z_0-9.]+"
+#mono    body            bold                    "[-a-z_0-9.]+@[-a-z_0-9.]+"
+#color   body            brightyellow    black   "^Good signature"
+#mono    body            bold                    "^Good signature"
+#color   body            brightwhite     red     "^Bad signature from.*"
+#mono    body            bold                    "^Bad signature from.*"
+#color   normal          white           blue
+#color   message         green           black
+#color   attachment      brightgreen     blue
+
+#ignore *
+#unignore from date subject to cc
+#set hostname=$HOSTNAME
+
+#bind index <HOME> previous-entry
+#bind index <END> next-entry
+
+#set signature="/usr/bin/fortune |"
+

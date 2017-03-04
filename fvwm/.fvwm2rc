@@ -1,0 +1,358 @@
+###################################################################
+### FVWM2 Configuration File 
+#
+# Created by: Joel A. Kulesza
+#
+# Prerequisites:
+#
+#  - fvwm - Duh.
+#  - gthumb - Gnome thumbnail viewer.
+#  - update-manager-gnome - Gnome system update manager.
+#  - xli - Image viewer used for setting wallpaper image.
+#  - xpdf - Lightweight PDF viewer.
+#
+#  sudo apt-get install fvwm gthumb update-manager-gnome xli xpdf 
+#
+# Adjusting Xorg Resolution
+#
+#  - As root, execute Xorg -configure (this must be done without X running; may
+#    need to stop GDM service in /etc/init.d).
+#  - Put the created file in /etc/X11/xorg.conf
+#  - Add "Modes" entries under the Screen color depth of choice.
+#    -  Acceptable entries can be found by running `xrandr` from X.
+#    -  Example Modes Line: 
+#          SubSection "Display"                                                         
+#             Viewport   0 0                                                            
+#             Depth     24                                                              
+#             Modes "1600x1200" "1440x1050" "1280x960" "1024x768" "800x600" "640x480"   
+#          EndSubSection                               
+#
+# Mousescrolling in Virtualbox
+#
+#    If mousewheel scrolling doesn't appear to be working with VirtualBox, try
+#    disabling mouse integration, or in newer versions, absolute pointing devices.
+#    
+
+###################################################################
+### Environnement Settings
+
+## Maximum size for thumbnail icons
+SetEnv fvwm_icon_size     192
+
+SetEnv fvwm_right_margin  70
+SetEnv fvwm_wallpaper_dir $[FVWM_USERDIR]/wallpapers
+SetEnv fvwm_icon_dir      $[FVWM_USERDIR]/icons
+SetEnv fvwm_applet_dir    $[FVWM_USERDIR]/applets
+SetEnv fvwm_applet_size   142
+
+###################################################################
+### Functions
+
+Read .functions
+ 
+##################################################################
+### Starting and Exiting
+
+DestroyFunc InitFunction
+AddtoFunc   InitFunction
+
+## Start Function
+DestroyFunc StartFunction 
+AddToFunc   StartFunction
++ I Module FvwmPager 
++ I Module FvwmEvent
++ I Exec `ln -sf /usr/bin/xterm  $fvwm_applet_dir/xterm_app`
++ I Exec `ln -sf /usr/bin/xclock $fvwm_applet_dir/xclock_app`
++ I Exec `mkdir ~/Screenshots`
++ I Exec `xrdb -remove`
++ I Exec `xrdb -merge ~/.Xresources`
+#
++ I RefreshWallpaper
+#
++ I None (xterm_app)  Exec exec $fvwm_applet_dir/xterm_app +sb -bg black -fg grey90 -geometry 23x9-0+184 -e "export PS1=\"\" && cal | sed -e 's/^/ /'; bash -rcfile $fvwm_applet_dir/bashrc.app"
+#+ I None (xclock_app) Exec exec $fvwm_applet_dir/xclock_app -digital -strftime "%R (%Z)" -padding 0 -background black -foreground white -geometry -0+284
++ I None (xclock_app) Exec exec $fvwm_applet_dir/xclock_app -norender -update 1 -bg black -fg white -hd white -hl white -geometry 142x142-0+306
+
+## Restart Function
+DestroyFunc RestartFunction
+AddToFunc   RestartFunction
+#+ I Exec killall xterm_app xclock_app
+ 
+## Exit Function
+DestroyFunc ExitFunction
+AddToFunc   ExitFunction
+
+###################################################################
+### General Settings
+
+## Set the Desktop Size
+DeskTopSize 2x4
+
+## Ignore CapsLock (L), NumLock (2) and ScrollLock (5)
+IgnoreModifiers L25
+
+SnapAttraction 5 Windows Screen
+EdgeScroll 100 0
+EdgeResistance 10000000 0
+OpaqueMoveSize unlimited
+HideGeometryWindow Always
+BugOpts FlickeringMoveWorkaround True
+#SnapGrid 1 1
+
+Read .colorsets
+
+###################################################################
+### Default Window Styles
+
+Style * Colorset 20, HilightColorset 12
+Style * Font "Shadow=1 1 SE:xft:sans:bold:pixelsize=10:minspace=True"
+Style * SmartPlacement, WindowShadeSteps 0, ResizeOutLine
+Style * DecorateTransient, NoPPosition, IconBox 20 95 100 -15, IconGrid 3 3, IconFill left top
+Style * SloppyFocus, MouseFocusClickRaises, TileCascadePlacement, WindowShadeSteps 20
+#Style * ClickToFocus
+Style * GrabFocusOff, NoIconTitle
+Style * BorderWidth 1, HandleWidth 3
+
+###################################################################
+### Titlebar Decoration
+
+Style * Button 2, Button 4
+
+TitleStyle Centered Height 15
+TitleStyle AllActive ( ColorSet 10 -- Flat )
+TitleStyle AllInactive ( ColorSet 11 -- Flat )
+TitleStyle -- Flat
+
+BorderStyle Simple -- HiddenHandles NoInset
+
+ButtonStyle All Simple -- UseTitleStyle
+ButtonStyle All -- Flat
+ButtonStyle All Active ( Colorset 10 -- Flat )
+ButtonStyle All InActive ( Colorset 11 -- Flat )
+
+ButtonStyle 2 17 20x20@1 30x20@1 50x40@1 70x20@1 80x20@1 80x30@0 60x50@0 80x70@1 80x80@0 70x80@0 50x60@0 30x80@0 20x80@0 20x70@0 40x50@1 20x30@0 20x20@1 -- Flat
+ButtonStyle 4 10 40x55@1 40x80@0 15x80@0 15x55@1 40x55@1 30x55@1 30x30@1 70x30@1 70x70@1 45x70@1 -- Flat
+ButtonStyle 6 12 50x10@1 25x35@1 40x35@1 40x60@1 25x60@1 50x85@1 75x60@0 60x60@0 60x35@0 75x35@0 50x10@0 50x10@1 -- Flat
+ButtonStyle 8 12 10x50@1 35x25@1 35x40@1 65x40@1 65x25@1 90x50@1 65x75@0 65x60@0 35x60@0 35x75@0 10x50@0 10x50@1 -- Flat
+
+###################################################################
+### Application Styles Settings
+
+## Fvwm Modules Styles
+Style FvwmPager         NoTitle,  Sticky, WindowListSkip, CirculateSkipIcon, CirculateSkip
+Style FvwmPager         StaysOnBottom, NoHandles, BorderWidth 0, FixedPosition, FixedSize, !Iconifiable
+Style FvwmDock          Sticky, NoTitle, NoHandles, Borderwidth 1
+Style FvwmDock          WindowListSkip, StaysOnBottom
+#Style FvwmButtons       NoTitle, StaysOnBottom, Sticky, WindowListSkip, CirculateSkipIcon, CirculateSkip
+#Style FvwmButtons       BorderWidth 0, NoHandles, NoTitle, Sticky, WindowListSkip 
+Style FvwmNotify        NeverFocus, NoTitle, StaysOnTop, Sticky
+
+Style term_tiny         BorderWidth 0, NoHandles, NoTitle, Sticky, WindowListSkip
+Style xterm_app         BorderWidth 0, NoHandles, NoTitle, Sticky, WindowListSkip
+Style xclock_app        BorderWidth 0, NoHandles, NoTitle, Sticky, WindowListSkip
+Style wmCalClock        BorderWidth 0, NoHandles, NoTitle, Sticky, WindowListSkip
+
+#Style www-browser       Maximize -68p 100
+#Style google-chrome     UseStyle www-browser
+#Style chromium          UseStyle www-browser
+
+###################################################################
+### CursorStyle
+
+CursorStyle root left_ptr
+CursorStyle default left_ptr
+CursorStyle position left_ptr
+CursorStyle sys left_ptr
+CursorStyle menu left_ptr
+CursorStyle title left_ptr
+CursorStyle resize fleur
+CursorStyle stroke cross
+CursorStyle select draped_box
+
+###################################################################
+### Mouse Bindings
+
+## Root Menus
+Mouse 1     R       A   -
+Mouse 2     R       A   PlaceAgainAll
+Mouse 3     R       A   Menu MenuFvwmRoot
+
+## Titlebar Buttons
+Mouse 1     8       A   Maximize grow 0
+Mouse 1     6       A   Maximize 0    grow
+Mouse 1     4       A   Maximize -68p 100
+Mouse 1     2       A   Close
+
+## Window, Frame, Side, Others
+Mouse 1     FS      A   ResizeFunc
+Mouse 2     W       C   ResizeFunc
+Mouse 1     W       M   MoveFunc
+Mouse 3     W       M   ResizeFunc
+Mouse 3     TSIF    A   RaiseLower
+Mouse 3     T       A   Menu MenuFvwmWindowOps2
+Mouse 1     T       A   FuncFvwmMoveOrRaise
+
+AddToFunc ResizeFunc "M" Resize
+AddToFunc MoveFunc   "M" Move
+
+## Icons Binding
+Mouse 1     I       A   Iconify
+Mouse 2     I       A   Move
+
+###################################################################
+### Keyboard Bindings
+
+# Ctrl-Alt-Del or Winkey-L to Lock Screen
+#Key Delete  A  CM                Exec exec nice xscreensaver-command --lock
+#Key L       A  4                 Exec exec nice xscreensaver-command --lock
+
+## Pager Bindings
+# Alt-ArrowKey to Change Pages
+Key Left   A CM GoToPage -1p  0p
+Key Right  A CM GoToPage +1p  0p
+Key Up     A CM GoToPage  0p -1p
+Key Down   A CM GoToPage  0p +1p
+
+#  Alt-Tab to Switch Windows on the Current Page
+# Crtl-Tab to Switch Windows on the Current Page
+Key Tab A C  SwitchWindow
+Key Tab A M  SwitchWindow
+
+###################################################################
+### Pager
+
+DestroyModuleConfig FvwmPager: *
+*FvwmPager: Geometry 70x185-0+0
+#*FvwmPager: Colorset * 40
+#*FvwmPager: HilightColorset * 41
+#*FvwmPager: WindowColorsets 43 42
+#*FvwmPager: BalloonColorset * 43
+*FvwmPagerBack #000000
+*FvwmPagerFore #CCCCCC
+*FvwmPagerHilight #001166
+*FvwmPagerWindowColors #333333 #333333 #333333 
+*FvwmPager: Font none
+*FvwmPager: SmallFont none
+*FvwmPager: Balloons All
+*FvwmPager: BalloonFont "Shadow=1 1 SE:xft:sans:bold:pixelsize=10:minspace=True"
+*FvwmPager: BalloonYOffset +2
+*FvwmPager: BalloonBorderWidth 0
+*FvwmPager: MoveThreshold 0
+*FvwmPager: SolidSeparators
+*FvwmPager: WindowBorderWidth 1
+*FvwmPager: ShapeLabels
+*FvmwPager: MiniIcons
+###################################################################
+### FVWM Buttons
+
+DestroyModuleConfig FvwmButtons: *
+*FvwmButtons: Geometry 100x400
+*FvwmButtonsBack #000000
+*FvwmButtonsFore #CCCCCC
+#*FvwmButtons: (1x1, NoTitle 'xload', Swallow(UseOld,NoHints,NoRespawn) "xload" 'Exec xload'
+#*FvwmButtons: (1x1, NoTitle 'xload', Swallow(UseOld,NoHints,NoRespawn) FvwmPager
+
+###################################################################
+### Misc. Modules
+
+## Event Handler
+DestroyModuleConfig FvwmEvent
+*FvwmEvent: Cmd Function
+*FvwmEvent: PassId Function
+*FvwmEvent: add_window NewWindowFunction
+*FvwmEvent: deiconify OnDeiconify
+
+## Window Identification
+DestroyModuleConfig FvwmIdent: *
+*FvwmIdent: Back black
+*FvwmIdent: Fore #f1f1f1
+*FvwmIdent: Font "xft:sans:bold:pixelsize=10:minspace=True"
+
+###################################################################
+### Menus
+
+## Menu Settings
+MenuStyle * Hilight3DThin
+MenuStyle * PopupOffset +0 100, PopupDelay 100
+MenuStyle * Font "Shadow=1 1 SE:xft:sans:bold:pixelsize=12:minspace=True"
+MenuStyle * MenuColorset 0, HilightBack, ActiveColorset 1
+MenuStyle * BorderWidth 1, TitleUnderlines1, SeparatorsLong, TrianglesSolid
+#MenuStyle * Animation
+MenuStyle * ItemFormat "%.2|%.5i%.5l%.5i%2.3>%2|"
+#MenuStyle * AutomaticHotKeys
+
+## Root Menu
+DestroyMenu MenuFvwmRoot
+AddToMenu MenuFvwmRoot
++ "Root Menu"                                                                                  Title
++ "xterm"%$[fvwm_icon_dir]/icon_black_terminal.png%                                            Exec exec xterm +sb -bg black -fg grey90  
++ "xterm (Large)"%$[fvwm_icon_dir]/icon_black_terminal.png%                                    Exec exec xterm +sb -bg black -fg grey90 -fn 10x20 
+Test (x google-chrome)   + "Chrome"%$[fvwm_icon_dir]/icon_chrome.png%                          StartMaximized google-chrome
+Test (x chromium)        + "Chromium"%$[fvwm_icon_dir]/icon_chromium.png%                      StartMaximized chromium
+Test (x gnome-terminal)  + "Gnome Terminal"%$[fvwm_icon_dir]/icon_gnome_terminal.png%          Exec exec gnome-terminal 
+Test (x gvim)            + "GVim"%$[fvwm_icon_dir]/icon_gvim.png%                              Exec exec gvim 
++ "Multimedia"%$[fvwm_icon_dir]/icon_applications-other.png%                                   Popup MenuMultimedia
++ "System Tools"%$[fvwm_icon_dir]/icon_system_menu.png%                                        Popup MenuSysTools
++ ""                                                                                           Nop
++ "Refresh Wallpaper"%$[fvwm_icon_dir]/icon_refresh_wallpaper.png%                             RefreshWallpaper
++ ""                                                                                           Nop
++ "Restart"%$[fvwm_icon_dir]/icon_refresh.png%                                                 Restart
++ "Quit"%$[fvwm_icon_dir]/icon_exit.png%                                                       Popup MenuQuit-Verify
+
+DestroyMenu MenuMultimedia
+AddToMenu MenuMultimedia
+Test (x gimp)            + "GIMP"%$[fvwm_icon_dir]/icon_gimp.png%                               Exec exec gimp
+Test (x inkscape)        + "Inkscape"%$[fvwm_icon_dir]/icon_inkscape.png%                       Exec exec inkscape
+
+DestroyMenu MenuSysTools                                                                            
+AddToMenu MenuSysTools                                                                              
++ "Screenshot"%$[fvwm_icon_dir]/icon_screenshot.png%                                           Exec exec import -window root ~/Screenshots/`date +"%H%%%M(%S)_%m|%d|%Y"`.jpeg 
+Test (x gvim) + "Edit fvwm2rc"%$[fvwm_icon_dir]/icon_fvwm.png%                                 Exec exec gvim ~/.fvwm/.fvwm2rc
++ ""                                                                                           Nop
+Test (x synaptic-pkexec) + "Synaptic"%$[fvwm_icon_dir]/icon_synaptic.png%                      Exec exec gksudo synaptic-pkexec
+Test (x update-manager)  + "System Update"%$[fvwm_icon_dir]/icon_update-manager.png%           Exec exec gksudo update-manager
+                                                                                              
+DestroyMenu MenuQuit-Verify                                                                   
+AddToMenu MenuQuit-Verify                                                                     
++ "Quit"%$[fvwm_icon_dir]/icon_exit.png%                                                       Quit
+
+###################################################################
+### Window Operation Menu 
+ 
+# Dynamic Window Menu
+AddToMenu MenuFvwmWindowOps2 DynamicPopupAction MenuFvwmWindowOpsFunc
+
+DestroyFunc MenuFvwmWindowOpsFunc
+AddToFunc MenuFvwmWindowOpsFunc
++ I DestroyMenu MenuFvwmWindowOps2
++ I AddToMenu MenuFvwmWindowOps2 DynamicPopupAction MenuFvwmWindowOpsFunc
++ I + "Resize"                           ThisWindow Resize
++ I + "Maximize"                         ThisWindow Maximize -68p 100
++ I + "Tile (Vert.)"                     ArrangeVertically
++ I + "Tile (Horz.)"                     ArrangeHorizontally
++ I + "Stick"                            Pick Stick
++ I ThisWindow (Layer 6)                 Nop
++ I TestRc (NoMatch) + "Always on Top"   Pick Layer 0 6
++ I ThisWindow (Layer 4)                 Nop
++ I TestRc (NoMatch) + "Remove from Top" RemoveFromTop
++ I + "Refresh"                          Pick RefreshWindow
++ I + ""                                 Nop
++ I + "Ident"                            Pick Module FvwmIdent
++ I + ""                                 Nop
++ I + "Send to"                          Popup MenuFvwmSendTo
++ I + ""                                 Nop
++ I + "Close"                            Close
++ I + "Destroy"                          Destroy
+
+# Sendto Menu for Desktops
+DestroyMenu MenuFvwmSendTo
+AddToMenu MenuFvwmSendTo
++ "Page &1" MoveToPage 0 0
++ "Page &2" MoveToPage 0 1
++ "Page &3" MoveToPage 0 2
++ "Page &4" MoveToPage 0 3
++ "Page &5" MoveToPage 1 0
++ "Page &6" MoveToPage 1 1
++ "Page &7" MoveToPage 1 2
++ "Page &8" MoveToPage 1 3
+

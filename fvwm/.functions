@@ -1,0 +1,63 @@
+###################################################################
+### Functions
+
+DestroyFunc RefreshWallpaper
+AddtoFunc   RefreshWallpaper
++ I Exec exec `find $fvwm_wallpaper_dir | grep -E '(jpg$|png$)' | sort -R | tail -1 | xargs xli -onroot -fillscreen -border black`
+
+# Remove From Top
+DestroyFunc RemoveFromTop
+AddToFunc RemoveFromTop
++ I Pick Layer 0 4
++ I Focus
++ I Raise
+
+# Better Alt-Tab Behavior
+SetEnv DIR Next                                                             
+
+DestroyFunc FocusRaiseAndStuff
+AddToFunc FocusRaiseAndStuff
++ I Iconify off
++ I Focus
++ I Raise
+
+DestroyFunc SwitchWindow
+AddToFunc SwitchWindow
++ I $[DIR] (CurrentPage, !Iconic, !Sticky) FocusRaiseAndStuff
++ I Deschedule 134000
++ I PipeRead `[ "$[DIR]" == "Prev" ] && \
+echo 'SetEnv NDIR Next' || \
+echo 'SetEnv NDIR Prev'`
++ I Schedule 700 134000 SetEnv DIR $[NDIR]
+
+## Double-click shades
+DestroyFunc FuncFvwmMoveOrRaise
+AddToFunc FuncFvwmMoveOrRaise
++ I Raise
++ M Move
++ D WindowShade
+
+DestroyFunc ArrangeVertically
+AddToFunc ArrangeVertically
++ I ThisWindow (Transient) Break
++ I ThisWindow (!Focused) Focus
++ I Current WindowStyle WindowListSkip
++ I Piperead 'echo FvwmRearrange -tile -noraise -u -mn 2 -m 0p 0p `expr $[vp.width] - 68`p 0p'
++ I Current WindowStyle WindowListHit
++ I UpdateStyles
+
+DestroyFunc ArrangeHorizontally
+AddToFunc ArrangeHorizontally
++ I ThisWindow (Transient) Break
++ I ThisWindow (!Focused) Focus
++ I Current WindowStyle WindowListSkip
++ I Piperead 'echo FvwmRearrange -tile -h -noraise -u -mn 2 -m 0p 0p `expr $[vp.width] - 68`p 0p'
++ I Current WindowStyle WindowListHit
++ I UpdateStyles
+ 
+DestroyFunc StartMaximized
+AddToFunc    StartMaximized
++ I Exec exec $0
++ I Wait $0
++ I Next ($0, !Maximized) Maximize -68p 100
+

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+export FC='gfortran-fsf-5'
+export GIT_SSH=$HOME/bin/turq-ssh-hop.sh
+export PATH="/sw/bin:/sw/anaconda3/bin:$PATH"
+export EDITOR=/sw/bin/vim
+
+# Setup MCNP
+alias mcnp6='/Users/jkulesza/SRC/MCNP_CODE_61_Package/MCNP6_Original/bin/macosx/mcnp6_macosx_x86_64_omp'
+export DATAPATH='/Users/jkulesza/SRC/MCNP_CODE_61_Package/MCNP_DATA'
+
+# Load ADVANTG
+#source /usr/local/advantg/rc
+

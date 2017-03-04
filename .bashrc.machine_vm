@@ -1,0 +1,5 @@
+#!/bin/bash
+
+alias mount_c='sudo mount -t vboxsf C_DRIVE /c'
+alias mount_p='sudo mount -t vboxsf P_DRIVE /p'
+

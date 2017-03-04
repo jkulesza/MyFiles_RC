@@ -1,0 +1,27 @@
+#!/bin/bash
+
+alias la='ls --color=auto -al'
+alias ls='ls --color=auto'
+alias ll='ls --color -l'
+
+# Silence bell.
+set bell-style none
+xset b off
+setterm -blength 0
+
+# Disable the screensaver and prevent screen blanking.
+xset s off
+xset s noblank
+
+if [ -f ~/.ssh/id_rsa_github_jkulesza ]; then
+  eval "$(ssh-agent -s)" &> /dev/null
+  ssh-add ~/.ssh/id_rsa_github_jkulesza &> /dev/null
+fi
+
+# Handle backspacing appropriately.
+if [ -t 0 ]; then
+   stty erase ^?
+fi
+
+ulimit -l unlimited 2> /dev/null
+

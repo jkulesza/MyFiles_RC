@@ -1,0 +1,11 @@
+OPTIONS=role:Barbarian
+OPTIONS=gender:male
+
+OPTIONS=!autopickup,autodig
+#OPTIONS=color,hilite_pet,lit_corridor,DECgraphics,boulder:8
+OPTIONS=color,hilite_pet,lit_corridor,boulder:8
+OPTIONS=showexp,showscore,time,msg_window:f
+OPTIONS=fruit:salad,catname:Cookie,dogname:Ula
+OPTIONS=disclose:+i +a +v +g +c
+OPTIONS=!legacy
+OPTIONS=pettype:cat

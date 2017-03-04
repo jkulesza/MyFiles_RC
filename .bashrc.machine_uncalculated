@@ -1,0 +1,10 @@
+#!/bin/bash
+
+alias btd='btdownloadcurses --max_upload_rate 3 '
+alias gonaim='screen -t naim -S naim naim'
+alias gonox='screen -t noxmms -S noxmms noxmms $HOME/Shoutcast/eighties.pls'
+alias www='cd /var/www/'
+alias g++='g++ -Wno-deprecated'
+alias abcde="abcde -o mp3:\"-h --vbr-new -V 3 -b 32 -B 320\" -p"
+alias get_and_process="cd ~/MVFC4/Call_Tracking && ./get_and_process_alerts.sh && cp ~/MVFC4/Call_Tracking/data.csv ~"
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+alias la='ls -G -al'
+alias ls='ls -G'
+alias ll='ls -G'
+
+export PATH="/sw/anaconda3/bin:/sw/bin:$PATH"
+
+if [ -f ~/.ssh/id_rsa_github_jkulesza ]; then
+  ssh-add ~/.ssh/id_rsa_github_jkulesza &> /dev/null
+fi
+if [ -f ~/.ssh/id_rsa_bitbucket_jkulesza ]; then
+  ssh-add ~/.ssh/id_rsa_bitbucket_jkulesza &> /dev/null
+fi
+if [ -f ~/.ssh/id_rsa_synology_jkulesza ]; then
+  ssh-add ~/.ssh/id_rsa_synology_jkulesza &> /dev/null
+fi
+
