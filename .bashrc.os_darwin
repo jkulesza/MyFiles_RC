@@ -3,6 +3,7 @@
 alias la='ls -G -al'
 alias ls='ls -G'
 alias ll='ls -G'
+alias resetlaunchpad="defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock"
 
 export PATH="/sw/anaconda3/bin:/sw/bin:$PATH"
 
@@ -16,3 +17,9 @@ if [ -f ~/.ssh/id_rsa_synology_jkulesza ]; then
   ssh-add ~/.ssh/id_rsa_synology_jkulesza &> /dev/null
 fi
 
+if [ -d $HOME/RSync/Docs/ ]; then
+  alias rsyncdocs='rsync -azP --delete --exclude ".DS_Store" --exclude "@eaDir" $HOME/RSync/Docs/. jkulesza@192.168.0.100:/volume1/Docs/.'
+fi
+if [ -d $HOME/RSync/photos/ ]; then
+  alias rsyncphotos='rsync -azP --delete --exclude ".DS_Store" --exclude "@eaDir" $HOME/RSync/photos/. jkulesza@192.168.0.100:/volume1/photos/.'
+fi

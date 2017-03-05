@@ -1,7 +1,11 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_cnt =9
 let g:netrw_dirhist_1='/Users/jkulesza/RC_Files/fvwm'
 let g:netrw_dirhist_2='/Users/jkulesza/RC_Files'
 let g:netrw_dirhist_3='/Users/jkulesza'
 let g:netrw_dirhist_4='/Users/jkulesza/RC_Files/.git'
 let g:netrw_dirhist_5='/Users/jkulesza/RC_Files/.vim'
+let g:netrw_dirhist_6='/Users/jkulesza/MyFiles_RC'
+let g:netrw_dirhist_7='/Users/jkulesza'
+let g:netrw_dirhist_8='/Users/jkulesza/GIT'
+let g:netrw_dirhist_9='/Users/jkulesza/GIT/jkulesza_rc_files'
