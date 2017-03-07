@@ -232,9 +232,9 @@ set_bash_prompt() {
 
   # Override prompt if root is being used.
   if [ `whoami` == "root" ]; then
-    export PS1="${git_branch}$RED\! \\u@$PS1HOST\\h$RED[\\w]> "
+    export PS1="${git_branch}${RED}\! \\u@${PS1HOST}\\h{$RED}[\\w]> "
   else
-    export PS1="${git_branch}$RESET\! \\u@$PS1HOST\\h$RESET[\\w]> "
+    export PS1="${git_branch}${RESET}\! \\u@${PS1HOST}\\h${RESET}[\\w]> "
   fi
 
   # Set terminal title.
@@ -245,8 +245,8 @@ set_bash_prompt() {
 # Function to obtain the current git branch for the current working directory.
 # Note the lack of escape codes on the colors.
 get_git_branch() {
-  DARKGREY='\033[90m'
-  RESET='\033[0m'
+  GITDARKGREY='\033[90m'
+  GITRESET='\033[0m'
   git_branch=`git symbolic-ref HEAD 2>/dev/null | sed 's/^.*\/\(.*\)/[Git(\1)]/g'`
-  git_branch="${DARKGREY}${git_branch}${RESET}\n"
+  git_branch="${GITDARKGREY}${git_branch}${GITRESET}\n"
 }
