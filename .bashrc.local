@@ -30,7 +30,7 @@ alias vncserver='vncserver -geometry 1100x880'
 alias xterm='xterm +sb -bg black -fg grey90'
 
 # Setup SSH aliases.  Kept private to keep destinations anonymous.
-source .dotfiles_private/.bashrc.ssh_aliases_generic
+source $HOME/.dotfiles_private/.bashrc.ssh_aliases_generic
 
 # Configure custom aliases in $HOME/bin.
 if [ -d "$HOME/bin" ]; then
@@ -107,9 +107,9 @@ shopt -s histappend
 ################################################################################
 
 if [[ `uname` == 'Darwin' ]]; then
-  source .bashrc.os_darwin
+  source $HOME/.bashrc.os_darwin
 elif [[ `uname` == 'Linux' ]]; then
-  source .bashrc.os_linux
+  source $HOME/.bashrc.os_linux
 fi
 
 ################################################################################
@@ -117,13 +117,13 @@ fi
 ################################################################################
 
 if [ ${HOSTNAME} == "tempest" ]; then # Office iMac
-  source .bashrc.machine_tempest
+  source $HOME/.bashrc.machine_tempest
 elif [ ${HOSTNAME} == "uncalculated" ]; then # Personal Machine
-  source .bashrc.machine_uncalculated
+  source $HOME/.bashrc.machine_uncalculated
 elif [ ${HOSTNAME} == "vm" ]; then # Virtual Machine
-  source .bashrc.machine_vm
+  source $HOME/.bashrc.machine_vm
 elif [ ${HOSTNAME} == "gale" ]; then  # Laptop
-  source .bashrc.machine_gale
+  source $HOME/.bashrc.machine_gale
 fi
 
 ################################################################################

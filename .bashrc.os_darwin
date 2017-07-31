@@ -4,6 +4,7 @@ alias la='ls -G -al'
 alias ls='ls -G'
 alias ll='ls -G'
 alias resetlaunchpad="defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock"
+alias resetcamera="sudo killall VDCAssistant"
 
 export PATH="/sw/anaconda3/bin:/sw/bin:$PATH"
 

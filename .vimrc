@@ -1,23 +1,30 @@
 " vim:fdm=marker
 
+                                                                                                                     " Plugins {{{
+" Permit Pathogen to operate.
+silent! execute pathogen#infect()
+if exists('g:loaded_pathogen')
+  " Change how indented lines are displayed; don't display by default.  Toggle with :IndentLinesToggle.
+  let g:indentLine_enabled = 0                                                                                          " Disable indent indication
+  let g:indentLine_char = '>'                                                                                           " Change character used to indicate indent depth
+  let g:indentLine_indentLevel = 25                                                                                     " Set maximum indent depth indicated
+
+endif
+                                                                                                                     " }}}
                                                                                                                      " Preliminaries {{{
+let mapleader=","                                                                                                       " Use a consenus 'better' leader key
 syntax on                                                                                                               " Enable syntax highlighting
+filetype plugin on                                                                                                      " Enable filetype-specific plugin loading (e.g., for nerdcommenter)
 set nocompatible                                                                                                        " This is vim, not vi...
 set fileformat=unix                                                                                                     " Set UNIX file format
 set encoding=utf-8 fileencoding=utf-8 termencoding=utf-8                                                                " Set file encodings
 set timeoutlen=1000 ttimeoutlen=0                                                                                       " Set timeout lengths for 'esc'
-                                                                                                                     " }}}
-                                                                                                                     " Plugins {{{
-" Permit Pathogen to operate.
-execute pathogen#infect()
-
-" Change how indented lines are displayed; don't display by default.  Toggle with :IndentLinesToggle.
-let g:indentLine_enabled = 0                                                                                            " Disable indent indication
-let g:indentLine_char = '>'                                                                                             " Change character used to indicate indent depth
-let g:indentLine_indentLevel = 25                                                                                       " Set maximum indent depth indicated
+set hidden                                                                                                              " Set ability to edit multiple files with :bufdo
+set lazyredraw                                                                                                          " Don't redraw the screen while executing non-typed commands
                                                                                                                      " }}}
                                                                                                                      " Backup / Swap / Undo File Behavior {{{
 set nobackup                                                                                                            " Do not create backup files
+set backupskip=/tmp/*,/private/tmp/*
 set noswapfile                                                                                                          " Do not create swap files
 set undofile                                                                                                            " Create a persistent undo file
 set undodir=$HOME/.vim_undo                                                                                             " Set persistent undo file directory
@@ -71,7 +78,9 @@ set winaltkeys=no                                                               
                                                                                                                      " Status Line {{{
 set laststatus=2                                                                                                        " Always show status line
 set statusline=
-set statusline+=%{fugitive#statusline()}
+if exists('g:loaded_fugitive')
+  set statusline+=%{fugitive#statusline()}
+endif
 set statusline+=[%F%m%r%h%w]
 set statusline+=%=[%l,%v][%p%%][LEN=%L]
                                                                                                                      " }}}
@@ -102,8 +111,8 @@ endif
                                                                                                                      " }}}
                                                                                                                      " Set Filetype Autocommands {{{
 :let fortran_free_source=1                                                                                              " Assume free-format Fortran by default
-autocmd Filetype fortran setlocal com+=n:!                                                                              " Recognize ! as Fortran comment
-autocmd Filetype gitcommit setlocal spell textwidth=72 fo+=a                                                            " Setup editing to work with git
+autocmd Filetype fortran setlocal com+=n:! textwidth=80                                                                 " Recognize ! as Fortran comment
+autocmd Filetype gitcommit setlocal spell textwidth=72                                                                  " Setup editing to work with git
 autocmd FileType make setlocal noexpandtab                                                                              " Don't expandtab for makefiles
 autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4                                                   " Change tab behavior to accomodate Python style guidance
 autocmd BufNewFile,BufFilePre,BufRead *.md set filetype=markdown                                                        " Enable markdown behavior for .md files
@@ -316,10 +325,10 @@ hi DiffAdd         guifg=NONE          guibg=#5f0000       gui=NONE            c
 hi DiffChange      guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=018         cterm=NONE
 hi DiffText        guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=163         cterm=NONE
 hi DiffDelete      guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=052         cterm=NONE
-hi SpellBad        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=238         cterm=UNDERLINE
-hi SpellCap        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=238         cterm=UNDERLINE
-hi SpellRare       guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=238         cterm=UNDERLINE
-hi SpellLocal      guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=238         cterm=UNDERLINE
+hi SpellBad        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+hi SpellCap        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+hi SpellRare       guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+hi SpellLocal      guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
 
 set fillchars+=vert:\ " Remove pipes from vertical split delimiter
 
