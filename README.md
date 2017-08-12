@@ -38,8 +38,9 @@ depending on the version of tar.*
 
 ### Change all Dates
 
-``` exiftool -AllDates='2015:10:13 13:00:00' -overwrite_original
-2015_10_13_02.jpeg ```
+```
+exiftool -AllDates='2015:10:13 13:00:00' -overwrite_original 2015_10_13_02.jpeg
+```
 
 ## git
 
@@ -59,14 +60,17 @@ simple `git push` is called.  For example, one might see:
 > git remote -v
 origin git@github.com:jkulesza/RC_Files.git (fetch) origin
 git@bitbucket.org:jkulesza/rc_files.git (push) origin
-git@github.com:jkulesza/RC_Files.git (push) ```
+git@github.com:jkulesza/RC_Files.git (push)
+```
 
 ## Embed Fonts in PDF
 
 One can embed fonts in a pdf with the `pdftocairo` command line tool using a
 command line
 
-``` pdf2cairo -pdf infile.pdf outfile.pdf ```
+```
+pdf2cairo -pdf infile.pdf outfile.pdf
+```
 
 ## Linux
 
@@ -93,8 +97,9 @@ the destination directory.
 The following two commands give full owner and group permissions to all files
 and directories in /path/to.
 
-``` find /path/to -type d -exec chmod 770 {} \; find /path/to -type f -exec
-chmod 660 {} \; ```
+```
+find /path/to -type d -exec chmod 770 {} \; find /path/to -type f -exec chmod 660 {} \;
+```
 
 ### XTerm Selection with Double Mouseclicks
 
@@ -107,8 +112,12 @@ the ~/.Xdefaults file.
 It'll take some further investigation, but word has it that one can also modify
 XTerm click behavior with the regular expressions similar to the following.
 
-``` xterm*on2Clicks:  regex [^/@ \n]+ xterm*on3Clicks:  regex [^ \n]+
-xterm*on4Clicks:  regex [^#$]+ xterm*on5Clicks:  line ```
+```
+xterm*on2Clicks:  regex [^/@ \n]+
+xterm*on3Clicks:  regex [^ \n]+
+xterm*on4Clicks:  regex [^#$]+
+xterm*on5Clicks:  line
+```
 
 ## Mac OSX
 
@@ -121,11 +130,15 @@ Nevertheless, to disable SIP, boot into the OSX utilities dialog by holding
 *Command-R* during boot until the Apple logo appears with a bar beneath it.
 Then, when within the Utilities interface, launch the terminal and type
 
-```csrutil disable```
+```
+csrutil disable
+```
 
 to renable, type
 
-```csrutil enable```.
+```
+csrutil enable
+```
 
 ### Burn ISO to USB Drive
 
@@ -232,19 +245,23 @@ unfortunately required)
 Once a certificate has been created, the debugger can be codesigned as follow.
 In a Terminal, run the following command...
 
-```codesign -fs "gdb-cert" /sw/bin/fsf-gdb```
+```
+codesign -fs "gdb-cert" /sw/bin/fsf-gdb
+```
 
 #### Update Taskgated plist Entry
 
 Changing the `/System/Library/LaunchDaemons/com.apple.taskgated.plist` entry of
 
-``` <array> <string>/usr/libexec/taskgated</string> <string>-s</string> </array>
+```
+<array> <string>/usr/libexec/taskgated</string> <string>-s</string> </array>
 ```
 
 to
 
-``` <array> <string>/usr/libexec/taskgated</string> <string>-sp</string>
-</array> ```
+```
+<array> <string>/usr/libexec/taskgated</string> <string>-sp</string> </array>
+```
 
 #### Add User To procmod Group
 
@@ -256,21 +273,27 @@ Add the user to the `procmod` group with `sudo dseditgroup -o edit -a jkulesza
 
 ### Plot Cross Section
 
-``` mcnp6 ixz i=${INPUT} xs 1001.80c mt=-1 printpts ${OUTFILE} ```
+```
+mcnp6 ixz i=${INPUT} xs 1001.80c mt=-1 printpts ${OUTFILE}
+```
 
 will plot an MCNP file of the form
 
-``` Cross Section Plotter
+```
+Cross Section Plotter
 100  1 -1 -100 imp:n=1
 666  0     100 imp:n=0
 
 100  so 1
 
-mode n m1 49115.80c 1.0 sdef print nps 10 ```
+mode n m1 49115.80c 1.0 sdef print nps 10
+```
 
 ### Plot fmesh Tally
 
-``` mcnp6 z runtpe=${RUNTPE} fmesh 4 ```
+```
+mcnp6 z runtpe=${RUNTPE} fmesh 4
+```
 
 ## MySQL
 
@@ -299,9 +322,11 @@ enter:
 
 ### Calculate Plane Equation From 3 Points
 
-``` from sympy import Point3D, Plane, N a = Plane(
+```
+from sympy import Point3D, Plane, N a = Plane(
 Point3D(-3.7714999999999996,-3.469,1), Point3D(-3.7714999999999996,-3.469,0),
-Point3D(-3.6245+8.010,-3.432,0)) print(N(a.equation())) ```
+Point3D(-3.6245+8.010,-3.432,0)) print(N(a.equation()))
+```
 
 ### Check If In A Screen Session `assert(os.getenv('STY') != None), "You are not
 within a screen session."`
@@ -332,11 +357,21 @@ http://stackoverflow.com/a/5171935.
 The following VB Macro will make multiple Microsoft Visio shapes the same size
 as the first shape selected.
 
-``` Public Sub MakeSameSize() Dim width As Double, height As Double If
-ActiveWindow.Selection.Count > 0 Then With ActiveWindow.Selection width =
-.Item(1).Cells("Width").ResultIU height = .Item(1).Cells("Height").ResultIU For
-i = 2 To ActiveWindow.Selection.Count .Item(i).Cells("Width").ResultIU = width
-.Item(i).Cells("Height").ResultIU = height Next i End With End If End Sub ```
+```
+Public Sub MakeSameSize()
+  Dim width As Double, height As Double
+  If ActiveWindow.Selection.Count > 0 Then
+    With ActiveWindow.Selection
+      width = .Item(1).Cells("Width").ResultIU
+      height = .Item(1).Cells("Height").ResultIU
+      For i = 2 To ActiveWindow.Selection.Count
+        .Item(i).Cells("Width").ResultIU = width
+        .Item(i).Cells("Height").ResultIU = height
+        Next i
+    End With
+  End If
+End Sub
+```
 
 ## LyX
 
