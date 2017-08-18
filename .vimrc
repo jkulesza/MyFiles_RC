@@ -21,6 +21,7 @@ set encoding=utf-8 fileencoding=utf-8 termencoding=utf-8                        
 set timeoutlen=1000 ttimeoutlen=0                                                                                       " Set timeout lengths for 'esc'
 set hidden                                                                                                              " Set ability to edit multiple files with :bufdo
 set lazyredraw                                                                                                          " Don't redraw the screen while executing non-typed commands
+set viminfo='100,f1                                                                                                     " Save marks for last 100 files, save global marks
                                                                                                                      " }}}
                                                                                                                      " Backup / Swap / Undo File Behavior {{{
 set nobackup                                                                                                            " Do not create backup files
@@ -58,6 +59,7 @@ set diffopt+=iwhite                                                             
                                                                                                                      " }}}
                                                                                                                      " Searching & Maneuvering {{{
 set hlsearch incsearch ignorecase smartcase                                                                             " Perform incremental searching and highlight results
+set wildmode=longest,list                                                                                               " Show options for command line completion
 set wildmenu                                                                                                            " Show options for command line completion
 set scrolloff=999                                                                                                       " Unless at the top or bottom of the file, center cursor line
 set virtualedit=all                                                                                                     " Allow cursor to roam past EOL
@@ -78,9 +80,7 @@ set winaltkeys=no                                                               
                                                                                                                      " Status Line {{{
 set laststatus=2                                                                                                        " Always show status line
 set statusline=
-if exists('g:loaded_fugitive')
-  set statusline+=%{fugitive#statusline()}
-endif
+set statusline+=%{exists('g:loaded_fugitive')?fugitive#statusline():''}                                                 " Show fugitive, if it's available
 set statusline+=[%F%m%r%h%w]
 set statusline+=%=[%l,%v][%p%%][LEN=%L]
                                                                                                                      " }}}
@@ -277,10 +277,12 @@ augroup Shebang
 
   " The approach is taken here rather than using something like vim-skeletons
   " because of compound extensions (e.g., .mcnp.inp).
-  autocmd BufNewFile *.py       r ~/.vim/skeletons/skeleton.py       | execute "normal! ggdd$"
-  autocmd BufNewFile *.sh       r ~/.vim/skeletons/skeleton.sh       | execute "normal! ggddG$"
+  autocmd BufNewFile *.cc       r ~/.vim/skeletons/skeleton.cc       | execute "normal! ggdd0"
+  autocmd BufNewFile *.cpp      r ~/.vim/skeletons/skeleton.cpp      | execute "normal! ggdd0"
   autocmd BufNewFile *.f90      r ~/.vim/skeletons/skeleton.f90      | execute "normal! ggdd$"
   autocmd BufNewFile *.mcnp.inp r ~/.vim/skeletons/skeleton.mcnp.inp | execute "normal! ggdd$"
+  autocmd BufNewFile *.py       r ~/.vim/skeletons/skeleton.py       | execute "normal! ggdd$"
+  autocmd BufNewFile *.sh       r ~/.vim/skeletons/skeleton.sh       | execute "normal! ggddG$"
 
 augroup END
                                                                                                                      " }}}
@@ -396,40 +398,9 @@ function! HighlightColors()
   endwhile
 endfunc
 
-function! HighlightMCNP()
-" simple MCNP syntax highlighting
-"  exec 'syn match Number "\v\d+:"me=e-1'
-"  exec 'syn match Number "\v\=([-]*\d+\s*)+"ms=s+1'
-"  exec 'syn match Number "\v\=([-]*\d+[eE][-+]*\d+\s*)+"ms=s+1'
-"
-"  exec 'syn match Keyword "erg"'
-"  exec 'syn match Keyword "\v^\s*f"'
-"  exec 'syn match Keyword "\v^\s*fmesh"'
-"  exec 'syn match Keyword "geom"'
-"  exec 'syn match Keyword "imp"'
-"  exec 'syn match Keyword "origin"'
-"  exec 'syn match Keyword "\vimesh|iints|jmesh|jints|kmesh|kints"'
-"  exec 'syn match Keyword "\v^\s*m"'
-"  exec 'syn match Keyword "\v^\s*mt"'
-"  exec 'syn match Keyword "mode"'
-"  exec 'syn match Keyword "nps"'
-"  exec 'syn match Keyword "out"'
-"  exec 'syn match Keyword "print"'
-"  exec 'syn match Keyword "sdef"'
-"
-"  exec 'syn match SpecialChar "col"'
-"  exec 'syn match SpecialChar "rtz"'
-"  exec 'syn match SpecialChar "xyz"'
-"  exec 'syn match SpecialChar "\v:(n|p|e)"'
-
-  exec 'syn region Comment start="^\s*c " end="$"'
-  exec 'syn region Comment start="^\s*c$" end="$"'
-  exec 'syn region Comment start="\$"  end="$"'
-endfunc
-
 " only enable default goofy highlighting in .vimrc
 autocmd VimEnter * if @% == '.vimrc' | call HighlightColors() | endif
-autocmd BufNewFile,BufRead *.mcnp.inp call HighlightMCNP()
+" autocmd BufNewFile,BufRead *.mcnp.inp call HighlightMCNP()
 
 "ctermbg=000 #000000 ctermbg=001 #800000 ctermbg=002 #008000 ctermbg=003 #808000
 "ctermbg=004 #000080 ctermbg=005 #800080 ctermbg=006 #008080 ctermbg=007 #c0c0c0
