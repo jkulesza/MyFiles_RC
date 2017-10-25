@@ -270,7 +270,6 @@ Add the user to the `procmod` group with `sudo dseditgroup -o edit -a jkulesza
 
 ## MCNP
 
-
 ### Plot Cross Section
 
 ```
@@ -289,13 +288,18 @@ Cross Section Plotter
 
 100  so 1
 
-mode n m1 49115.80c 1.0 sdef print nps 10
+mode n 
+m1 49115.80c 1.0 
+sdef 
+print 
+nps 10
 ```
 
 ### Plot fmesh Tally
 
 ```
-mcnp6 z runtpe=${RUNTPE} fmesh 4
+mcnp6 z runtpe=${RUNTPE} 
+fmesh 4
 ```
 
 ## MySQL
@@ -326,21 +330,25 @@ enter:
 ### Calculate Plane Equation From 3 Points
 
 ```
-from sympy import Point3D, Plane, N a = Plane(
-Point3D(-3.7714999999999996,-3.469,1), Point3D(-3.7714999999999996,-3.469,0),
-Point3D(-3.6245+8.010,-3.432,0)) print(N(a.equation()))
+from sympy import Point3D, Plane, N 
+a = Plane(
+    Point3D(-3.7714999999999996,-3.469,1), 
+    Point3D(-3.7714999999999996,-3.469,0),
+    Point3D(-3.6245+8.010,-3.432,0)
+) 
+print(N(a.equation()))
 ```
 
-### Check If In A Screen Session `assert(os.getenv('STY') != None), "You are not
-within a screen session."`
+### Check If In A Screen Session 
+
+`assert(os.getenv('STY') != None), "You are not within a screen session."`
 
 ## rsync
 
 A useful `rsync` command to push files, recognizing changes but deleting old
 files, is:
 
-`rsync -abviuzP --delete -e ssh <ABSOLUTE_PATH_TO_SOURCE_DIR>
-user@destination:<ABSOLUTE_PATH_TO_DESTINATION_DIR>`
+`rsync -abviuzP --delete -e ssh <ABSOLUTE_PATH_TO_SOURCE_DIR> user@destination:<ABSOLUTE_PATH_TO_DESTINATION_DIR>`
 
 ## sed
 
@@ -376,7 +384,7 @@ Public Sub MakeSameSize()
 End Sub
 ```
 
-## LyX
+## LyX / LaTeX
 
 To map a shortcut for inserting a Cross Reference, one needs to bind a key
 combination to `dialog-show-new-inset ref`.
