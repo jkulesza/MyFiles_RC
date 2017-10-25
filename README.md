@@ -274,7 +274,10 @@ Add the user to the `procmod` group with `sudo dseditgroup -o edit -a jkulesza
 ### Plot Cross Section
 
 ```
-mcnp6 ixz i=${INPUT} xs 1001.80c mt=-1 printpts ${OUTFILE}
+mcnp6 ixz i=${INPUT} 
+xs 1001.80c 
+mt=-1 
+printpts ${OUTFILE}
 ```
 
 will plot an MCNP file of the form
