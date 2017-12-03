@@ -14,6 +14,7 @@ endif
                                                                                                                      " Preliminaries {{{
 let mapleader=","                                                                                                       " Use a consenus 'better' leader key
 syntax on                                                                                                               " Enable syntax highlighting
+let g:python_highlight_all = 1
 filetype plugin on                                                                                                      " Enable filetype-specific plugin loading (e.g., for nerdcommenter)
 set nocompatible                                                                                                        " This is vim, not vi...
 set fileformat=unix                                                                                                     " Set UNIX file format
@@ -25,7 +26,7 @@ set viminfo='100,f1                                                             
                                                                                                                      " }}}
                                                                                                                      " Backup / Swap / Undo File Behavior {{{
 set nobackup                                                                                                            " Do not create backup files
-set backupskip=/tmp/*,/private/tmp/*
+set backupskip=/tmp/*,/private/tmp/*                                                                                    " Skip doing anything for temp directories
 set noswapfile                                                                                                          " Do not create swap files
 set undofile                                                                                                            " Create a persistent undo file
 set undodir=$HOME/.vim_undo                                                                                             " Set persistent undo file directory
@@ -53,6 +54,9 @@ set expandtab                                                                   
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()                                                             " Automatically strip trailing whitespace from all lines upon save
 
 let perl_fold=1                                                                                                         " Fold Perl subroutines
+let fortran_free_source=1                                                                                               " Assume free-format Fortran by default
+let fortran_fold=1                                                                                                      " Permit Fortran folding by default
+set foldopen-=block
                                                                                                                      " }}}
                                                                                                                      " Differencing {{{
 set diffopt+=iwhite                                                                                                     " Ignore whitespace within vimdiff
@@ -110,16 +114,18 @@ endif
 "autocmd FileType html,xml,cpp,fortran,python match OverLength /\%81v.\+/                                                " Match columns over 80 as 'overlength'
                                                                                                                      " }}}
                                                                                                                      " Set Filetype Autocommands {{{
-:let fortran_free_source=1                                                                                              " Assume free-format Fortran by default
-autocmd Filetype fortran setlocal com+=n:! textwidth=80                                                                 " Recognize ! as Fortran comment
+autocmd Filetype cpp setlocal textwidth=80 foldmethod=syntax                                                            " Treat C++ specially
+autocmd Filetype fortran setlocal textwidth=80 foldmethod=syntax                                                        " Treat Fortran specially
 autocmd Filetype gitcommit setlocal spell textwidth=72                                                                  " Setup editing to work with git
 autocmd FileType make setlocal noexpandtab                                                                              " Don't expandtab for makefiles
 autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4                                                   " Change tab behavior to accomodate Python style guidance
 autocmd BufNewFile,BufFilePre,BufRead *.md set filetype=markdown                                                        " Enable markdown behavior for .md files
-autocmd BufNewFile,BufRead *.lyx set filetype=lyx
+autocmd BufNewFile,BufRead *.lyx set filetype=lyx                                                                       " Manually set LyX filetypes, mainly to avoid end of line fixups
+autocmd BufRead *.vimrc set foldmethod=marker                                                                           " Fold the .vimrc properly
                                                                                                                      " }}}
-                                                                                                                     " On-the-fly Spelling Correction {{{
+                                                                                                                     " On-the-fly Spelling Correction and Quick Edit Customization {{{
 iab teh the
+set nrformats-=octal                                                                                                    " Don't treat numbers with leading zeros as octal
                                                                                                                      " }}}
                                                                                                                      " Custom Key Mappings {{{
 " Automatically close symbol constructs
@@ -271,6 +277,14 @@ endfun
 function! To_Hex()
   :%!xxd
 endfun
+
+" Save folds between sessions.
+augroup AutoSaveFolds
+  autocmd!
+  autocmd BufWinLeave * mkview
+  autocmd BufWinEnter * silent loadview
+augroup END
+
                                                                                                                      " }}}
                                                                                                                      " Load Skeleton Files {{{
 augroup Shebang
@@ -400,7 +414,6 @@ endfunc
 
 " only enable default goofy highlighting in .vimrc
 autocmd VimEnter * if @% == '.vimrc' | call HighlightColors() | endif
-" autocmd BufNewFile,BufRead *.mcnp.inp call HighlightMCNP()
 
 "ctermbg=000 #000000 ctermbg=001 #800000 ctermbg=002 #008000 ctermbg=003 #808000
 "ctermbg=004 #000080 ctermbg=005 #800080 ctermbg=006 #008080 ctermbg=007 #c0c0c0
