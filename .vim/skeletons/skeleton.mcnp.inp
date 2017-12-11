@@ -76,9 +76,11 @@ c cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c
 rand gen=2 seed=12345
 c dbcn 2j 1 100 10000 $ Print event log for histories 1--100, limit to 10k lines
+c dbcn 2j 1 1 10000 j j 64 41j 1 $ Print event log for history 64, limit to 10k lines, increase TFC precision
 c dbcn 49j 1 $ Increase TFC precision
 c prdmp 2j 1 $ Write MCTAL file at conclusion of calculation
-c ptrac event=src nps=1,1000 write=all $ Write PTRAC file
+c ptrac event=src nps=1,100 write=all $ Write PTRAC file
+c ptrac file=asc nps=1,100 write=all $ Write PTRAC file
 c cut:n j j 0 0 $ Analog capture
 c dd1 0 $ Disable point detector / DXTRAN rouletting on transmission for neutrons
 print

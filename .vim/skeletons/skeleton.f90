@@ -11,6 +11,7 @@ contains
 end module test
 
 program TestProgram
+  use test
   write(*,'(a)') "Hello, world"
   call test1()
   call test2()

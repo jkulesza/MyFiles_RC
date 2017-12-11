@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+import numpy as np
+from pdflatex_plot import pdflatex_plot
+import re
+# import warnings
+# warnings.filterwarnings("ignore")
+
+################################################################################
+# EXECUTE PROGRAM ##############################################################
+################################################################################
+
 import __main__ as main
 if(__name__ == '__main__' and hasattr(main, '__file__')):
 
@@ -27,18 +37,18 @@ if(__name__ == '__main__' and hasattr(main, '__file__')):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=description, epilog=epilog)
 
-    # Add required, positional, arguments.
+    # Required positional argument(s).
     parser.add_argument(
         'inp', type = str,
         help = 'input file name')
 
-    # Add required, named, arguments.
+    # Required named argument(s).
     required_named = parser.add_argument_group('required named arguments')
     required_named.add_argument(
         '--out', '-o', type = str, required = True,
         help = 'output file name')
 
-    # Add optional, named, arguments.
+    # Optional named argument(s).
     parser.add_argument(
         '--np', '-p', type = int, default = 1,
         help = 'number of processors to request (default: 1)')
@@ -55,4 +65,7 @@ if(__name__ == '__main__' and hasattr(main, '__file__')):
     # Program execution.
     ############################################################
 
+    infilename = args.inp
+    with open( infilename, 'r' ) as myfile:
+        file = myfile.read().replace( '\n', '' )
 

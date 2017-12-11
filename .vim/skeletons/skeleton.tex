@@ -1,0 +1,160 @@
+\documentclass{article}
+
+\usepackage{calc}
+\usepackage{color}
+\usepackage{bm}
+\usepackage[us]{datetime}
+%\usepackage{draftwatermark}
+%\SetWatermarkText{\textbf{\textsf{DRAFT}}}
+%\SetWatermarkScale{0.75}
+%\SetWatermarkLightness{0.9}
+\usepackage{epsfig}
+\usepackage{fancybox}
+\usepackage{float}
+\usepackage[hang]{footmisc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{lastpage}
+\usepackage{lipsum}
+\usepackage{listings}
+\usepackage[final]{pdfpages} %draft or final
+\usepackage{pgfpages}
+\usepackage{pgfplots}
+\usepackage{setspace}
+\usepackage{soul}
+\usepackage{standalone}
+\usepackage{subfig}
+\usepackage{textcomp}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+  \usetikzlibrary{angles}
+  \usetikzlibrary{calc}
+  \usetikzlibrary{decorations.pathmorphing}
+  \usetikzlibrary{decorations.pathreplacing}
+  \usetikzlibrary{fit}
+  \usetikzlibrary{intersections}
+  \usetikzlibrary{patterns}
+  \usetikzlibrary{positioning}
+  \usetikzlibrary{quotes}
+  \usetikzlibrary{shapes}
+  \usetikzlibrary{shapes.multipart}
+  \usetikzlibrary{shapes.misc}
+  \usetikzlibrary{spy}
+\usepackage{url}
+\usepackage{xcolor}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Misc. Tweaks %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Represent \vec and \hat quantities as bold math instead.
+\renewcommand{\vec}[1]{\bm{#1}}
+\renewcommand{\hat}[1]{\bm{#1}}
+
+% Define custom colors.
+
+\definecolor{lanl_blue}{RGB}{89,96,168} % Official
+\definecolor{lanl_yellow}{RGB}{255,198,30} % Official
+\definecolor{lanl_blue}{HTML}{003195} % From Official PPT (slideshow-2014-basic.pptx)
+\definecolor{lanl_yellow}{HTML}{F0B539} % From Official PPT (slideshow-2014-basic.pptx)
+\definecolor{umich_maize}{HTML}{FFCB05} % From https://vpcomm.umich.edu/brand/style-guide/design-principles/colors
+\definecolor{umich_blue}{HTML}{00274C} % From https://vpcomm.umich.edu/brand/style-guide/design-principles/colors
+
+% Expand bounding box for reverse clipping of TikZ figures.
+\pgfmathsetmacro{\BBMargin}{1in}
+\tikzstyle{reverseclip}=[insert path={
+  ($(current page.north east) + ( \BBMargin, \BBMargin)$) --
+  ($(current page.south east) + ( \BBMargin,-\BBMargin)$) --
+  ($(current page.south west) + (-\BBMargin,-\BBMargin)$) --
+  ($(current page.north west) + (-\BBMargin, \BBMargin)$) --
+  ($(current page.north east) + ( \BBMargin, \BBMargin)$)}
+]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Code Listing Style %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{codebackground}{rgb}{1,1,1}
+\definecolor{codeframe}{rgb}{0,0,0}
+\definecolor{codecomment}{rgb}{0,0.6,0}
+\definecolor{codestring}{rgb}{0.58,0,0.82}
+\definecolor{codekeyword}{rgb}{0,0,1}
+
+\makeatletter
+\newcommand{\srcsize}{\@setfontsize{\srcsize}{5pt}{5pt}}
+\makeatother
+
+\lstset{ %
+  backgroundcolor=\color{codebackground},                % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\srcsize\ttfamily,                          % the size of the fonts that are used for the code
+  commentstyle=\color{codecomment},                      % comment style
+  numberstyle=\color{gray}\tiny\zebra{gray!10}{white}{}, % the style that is used for the line-numbers
+  rulecolor=\color{codeframe},                           % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  stringstyle=\color{codestring},                        % string literal style
+  breakatwhitespace=false,                               % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                                       % sets automatic line breaking
+  captionpos=t,                                          % sets the caption-position to bottom
+  deletekeywords={...},                                  % if you want to delete keywords from the given language
+  escapeinside={\%*}{*)},                                % if you want to add LaTeX within your code
+  extendedchars=true,                                    % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,                                          % adds a frame around the code
+  keepspaces=true,                                       % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  keywordstyle=\color{codekeyword},                      % keyword style
+  morekeywords={*,...},                                  % if you want to add more keywords to the set
+  numbers=left,                                          % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                                         % how far the line-numbers are from the code
+  showspaces=false,                                      % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,                                % underline spaces within strings only
+  showtabs=false,                                        % show tabs within strings adding particular underscores
+  stepnumber=1,                                          % the step between two line-numbers. If it's 1, each line will be numbered
+  tabsize=3,                                             % sets default tabsize to 2 spaces
+  title=\lstname,                                        % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+
+% Set zebra striping in verbatim / listing environments.
+\newcommand\realnumberstyle[1]{}
+\makeatletter
+\newcommand{\zebra}[2]{%
+  \begingroup
+  \lst@basicstyle
+  \ifodd\value{lstnumber}%
+    \color{#1}%
+  \else
+    \color{#2}%
+  \fi
+  \ifnum\value{lstnumber}>9
+    \rlap{\hspace*{\lst@numbersep}\hspace*{0.95em}%
+    \color@block{\linewidth}{\ht\strutbox}{\dp\strutbox}%
+    }%
+  \else
+    \rlap{\hspace*{\lst@numbersep}\hspace*{0.5em}%
+    \color@block{\linewidth}{\ht\strutbox}{\dp\strutbox}%
+    }%
+  \fi
+  \endgroup
+}
+
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Begin Document %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\lipsum[2]
+
+% \begin{figure}[H]
+% \noindent
+% \begin{centering}
+%   \subfloat[$S_N$ Quadrature; $N=6$]{ \noindent \centering{} \input{./angular_quadrature.tex}}
+% \end{centering}
+% \begin{centering}
+%   \subfloat[Space-angle Phase Space]{ \noindent \centering{} \input{./space_angle_phase_space.tex}}
+% \end{centering}
+% \caption{Common Radiation Transport Diagrams\label{fig:Common Diagrams}}
+% \end{figure}
+
+\end{document}

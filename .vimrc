@@ -56,6 +56,7 @@ autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()                     
 let perl_fold=1                                                                                                         " Fold Perl subroutines
 let fortran_free_source=1                                                                                               " Assume free-format Fortran by default
 let fortran_fold=1                                                                                                      " Permit Fortran folding by default
+let g:markdown_folding=1                                                                                                " Permit markdown folding by default
 set foldopen-=block
                                                                                                                      " }}}
                                                                                                                      " Differencing {{{
@@ -117,9 +118,9 @@ endif
 autocmd Filetype cpp setlocal textwidth=80 foldmethod=syntax                                                            " Treat C++ specially
 autocmd Filetype fortran setlocal textwidth=80 foldmethod=syntax                                                        " Treat Fortran specially
 autocmd Filetype gitcommit setlocal spell textwidth=72                                                                  " Setup editing to work with git
-autocmd FileType make setlocal noexpandtab                                                                              " Don't expandtab for makefiles
+autocmd Filetype make setlocal noexpandtab                                                                              " Don't expandtab for makefiles
 autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4                                                   " Change tab behavior to accomodate Python style guidance
-autocmd BufNewFile,BufFilePre,BufRead *.md set filetype=markdown                                                        " Enable markdown behavior for .md files
+autocmd BufNewFile,BufFilePre,BufRead *.md setlocal filetype=markdown                                                   " Enable markdown behavior for .md files
 autocmd BufNewFile,BufRead *.lyx set filetype=lyx                                                                       " Manually set LyX filetypes, mainly to avoid end of line fixups
 autocmd BufRead *.vimrc set foldmethod=marker                                                                           " Fold the .vimrc properly
                                                                                                                      " }}}
@@ -254,9 +255,9 @@ endfunction
 
 " Jump to last position in file (ignoring git commit messages).
 autocmd BufReadPost *
-  \ if expand('%:p') !~# '\m/\.git/' && line("'\"") > 0 && line("'\"") <= line("$") |
-  \     exe "normal! g`\"" |
-  \ endif
+  \   if expand('%:p') !~# '\m/\.git/' && line("'\"") > 0 && line("'\"") <= line("$")
+  \|    exe "normal! g`\""
+  \|  endif
 
 " Strip trailing whitespace and return cursor to previous position.
 " http://stackoverflow.com/questions/35390415/cursor-jump-in-vim-after-save
@@ -279,10 +280,16 @@ function! To_Hex()
 endfun
 
 " Save folds between sessions.
+" https://ebonhand.wordpress.com/2011/03/30/automatically-save-and-load-vim-views-folds/
 augroup AutoSaveFolds
-  autocmd!
-  autocmd BufWinLeave * mkview
-  autocmd BufWinEnter * silent loadview
+  autocmd VimLeavePre *
+  \   if expand('%') != '' && &buftype !~ 'nofile'
+  \|    mkview
+  \|  endif
+  autocmd BufRead *
+  \   if expand('%') != '' && &buftype !~ 'nofile'
+  \|    silent loadview
+  \|  endif
 augroup END
 
                                                                                                                      " }}}
@@ -297,6 +304,7 @@ augroup Shebang
   autocmd BufNewFile *.mcnp.inp r ~/.vim/skeletons/skeleton.mcnp.inp | execute "normal! ggdd$"
   autocmd BufNewFile *.py       r ~/.vim/skeletons/skeleton.py       | execute "normal! ggdd$"
   autocmd BufNewFile *.sh       r ~/.vim/skeletons/skeleton.sh       | execute "normal! ggddG$"
+  autocmd BufNewFile *.tex      r ~/.vim/skeletons/skeleton.tex      | execute "normal! ggdd0"
 
 augroup END
                                                                                                                      " }}}
