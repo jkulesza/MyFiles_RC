@@ -5,9 +5,10 @@ alias mcnp6='/Users/jkulesza/SRC/MCNP_CODE_61_Package/MCNP6_Original/bin/macosx/
 export DATAPATH='/Users/jkulesza/SRC/MCNP_CODE_61_Package/MCNP_DATA'
 
 export PATH=/local/brew/bin:$PATH
+export PATH=/local/brew/opt/qt5/bin:$PATH
 
 export GIT_SSH=$HOME/bin/turq-ssh-hop.sh
 
 # Load ADVANTG
-source /usr/local/advantg/rc
+# source /usr/local/advantg/rc
 
