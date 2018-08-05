@@ -1,44 +1,67 @@
-#!/bin/bash
+# Pull in HPC /etc/bashrc settings.
+if [ -f /etc/bashrc ]; then
+  source /etc/bashrc
+fi
 
 ################################################################################
 # Generic customizations.
 ################################################################################
 
-alias :e=vim
+export RCGITDIR=$HOME/MyFiles_RC
+
 alias :q=exit
-alias ..="cd .."
 
-alias c="cd && clear"
-alias cd..="cd .."
-alias d='ls --color'
-alias data='cd /data/`whoami`'
-alias displayset="export DISPLAY=`echo $SSH_CONNECTION | awk '{print $1}' | sed 's/::ffff://' | sed 's/$/:0/'`"
-alias displayunset='export DISPLAY='
-alias g="git"
-alias gitl="git log --pretty=format:'%h | %an | %s'"
-alias gv='gvim'
-alias h='history | tail -n 15'
-alias la='ls -al'
-alias listvnc="ps aux | grep Xvnc | grep -v grep | awk '{print \$12,\$1}' | sed 's/://' | sort"
-alias lS='ls -lsShr'
-alias lst='echo ; set tda = `date --iso-8601` ; ls -lat --time-style=long-iso | grep "$tda" '
+alias c='cd && clear'
+alias g='git'
+alias h='history | tail'
+complete -d cd # Only perform autocompletion on `cd` for directories.
+
+alias cd..='cd ..'
 alias path='echo $PATH | tr ":" "\n" | sort | uniq | sort'
-alias print='$HOME/bin/print.sh'
-alias ps2pdf='ps2pdf -sPAPERSIZE=letter'
-alias vi='vim -X'
-alias vncserver='vncserver -geometry 1100x880'
-alias xterm='xterm +sb -bg black -fg grey90'
+alias lsd='dirs | tr " " "\n"'
+alias jn='jupyter notebook'
+alias lmk='latexmk -pvc -pdf -interaction=nonstopmode '
 
-# Setup SSH aliases.  Kept private to keep destinations anonymous.
-source $HOME/.dotfiles_private/.bashrc.ssh_aliases_generic
+alias 2..='cd ../..'
+alias 3..='cd ../../..'
+alias 4..='cd ../../../..'
+alias 5..='cd ../../../../..'
+alias 6..='cd ../../../../../..'
+
+# Setup proxy.
+export  HTTP_PROXY=
+export HTTPS_PROXY=
+# Setup proxy for Homebrew.
+export   ALL_PROXY=$HTTP_PROXY
+
+# Set default editor to system vim.
+alias vi=vim
+export EDITOR=vim
+
+# Prevent Python from writing bytecode (.pyc) files.  This is fast so the time
+# sacrifice isn't significant but it keeps file spaces clean.
+# from: http://docs.python-guide.org/en/latest/writing/gotchas/#disabling-bytecode-pyc-files
+export PYTHONDONTWRITEBYTECODE=1
+
+# If available, set matplotlib defaults.
+if [ -f $RCGITDIR/matplotlibrc ]; then
+  export MATPLOTLIBRC=$RCGITDIR
+fi
 
 # Configure custom aliases in $HOME/bin.
 if [ -d "$HOME/bin" ]; then
-  alias pwf="$HOME/bin/pwf.sh"
+  alias cleanmcnp='python $HOME/bin/mcnp_clean.py'
+  alias mcnpclean='python $HOME/bin/mcnp_clean.py'
   export PATH="$HOME/bin:$PATH"
-fi
 
-export EDITOR=vim
+  if [ -d "$HOME/bin/rcbin" ]; then
+    alias mg='$HOME/bin/rcbin//mygit.py'
+    alias pwf='$HOME/bin/rcbin/pwf.sh'
+    if [ -d "$HOME/bin/rcbin/My_Python_Classes" ]; then
+      export PYTHONPATH=$HOME/bin/rcbin/My_Python_Classes:$PYTHONPATH
+    fi
+  fi
+fi
 
 # Configure custom software path in $HOME directory.  This is useful for package
 # manager deployment (e.g., MacPorts) or self-compiled and installed software.
@@ -48,25 +71,6 @@ if [ -d "$HOME/SW/$(hostname -s)" ]; then
   export SW=$HOME/SW/$(hostname -s)
   export PATH=$SW/bin:$PATH
   export LD_LIBRARY_PATH=$SW/lib:$LD_LIBRARY_PATH
-
-  # Update default editor to self-compiled vim, if available.
-  if [ -f $SW/bin/vim ]; then
-    export EDITOR=$SW/bin/vim
-  fi
-
-  # Setup PYTHONPATH recognizing that on various machiens various major/minor
-  # version of Python might have been used
-  for vmajor in {2..3}; do
-    for vminor in {0..9}; do
-      if [ -d $SW/lib/python$vmajor.$vminor/site-packages/ ]; then
-        export PYTHONPATH=$SW/lib/python$vmajor.$vminor/site-packages/:$PYTHONPATH
-      fi
-      if [ -d $SW/lib64/python$vmajor.$vminor/site-packages/ ]; then
-        export PYTHONPATH=$SW/lib64/python$vmajor.$vminor/site-packages/:$PYTHONPATH
-      fi
-    done
-  done
-
 fi
 
 # Customize prompt (old style).
@@ -98,9 +102,6 @@ set +o noclobber
 
 # Ignore duplicate entries in the Bash history.
 export HISTCONTROL=ignoreboth:erasedups
-export HISTSIZE=10000
-export HISTFILESIZE=10000
-shopt -s histappend
 
 ################################################################################
 # OS-specific customization.
@@ -113,16 +114,13 @@ elif [[ `uname` == 'Linux' ]]; then
 fi
 
 ################################################################################
-# Machine-specific customization.
+# Machine-specific customizations.
 ################################################################################
 
-if [ ${HOSTNAME} == "tempest" ]; then # Office iMac
+# Mac OS X Workstation
+if [[ "$HOSTNAME" = 'tempest'* ]]; then
   source $HOME/.bashrc.machine_tempest
-elif [ ${HOSTNAME} == "uncalculated" ]; then # Personal Machine
-  source $HOME/.bashrc.machine_uncalculated
-elif [ ${HOSTNAME} == "vm" ]; then # Virtual Machine
-  source $HOME/.bashrc.machine_vm
-elif [ ${HOSTNAME} == "gale" ]; then  # Laptop
+elif [[ "$HOSTNAME" = 'gale'* ]]; then
   source $HOME/.bashrc.machine_gale
 fi
 
@@ -137,46 +135,32 @@ PROMPT_COMMAND='set_bash_prompt'
 # Functions.
 ################################################################################
 
-# Extract pages from a PDF.
-pdfextr() {
-   # this function uses 3 arguments:
-   #     $1 is the first page of the range to extract
-   #     $2 is the last page of the range to extract
-   #     $3 is the input file
-   #     output file will be named "inputfile_pXX-pYY.pdf"
-   gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER \
-      -dFirstPage=${1} \
-      -dLastPage=${2} \
-      -sOutputFile=${3%.pdf}_p${1}-p${2}.pdf \
-      ${3}
-}
-
 # View terminal colors / color codes.
 colors() {
-  local fgc bgc vals seq0
+   local fgc bgc vals seq0
 
-  printf "Color escapes are %s\n" '\e[${value};...;${value}m'
-  printf "Values 30..37 are \e[33mforeground colors\e[m\n"
-  printf "Values 40..47 are \e[43mbackground colors\e[m\n"
-  printf "Value  1 gives a  \e[1mbold-faced look\e[m\n\n"
+   printf "Color escapes are %s\n" '\e[${value};...;${value}m'
+   printf "Values 30..37 are \e[33mforeground colors\e[m\n"
+   printf "Values 40..47 are \e[43mbackground colors\e[m\n"
+   printf "Value  1 gives a  \e[1mbold-faced look\e[m\n\n"
 
-  # foreground colors
-  for fgc in {30..37}; do
-     # background colors
-     for bgc in {40..47}; do
-        fgc=${fgc#37} # white
-        bgc=${bgc#40} # black
+   # foreground colors
+   for fgc in {30..37}; do
+      # background colors
+      for bgc in {40..47}; do
+         fgc=${fgc#37} # white
+         bgc=${bgc#40} # black
 
-        vals="${fgc:+$fgc;}${bgc}"
-        vals=${vals%%;}
+         vals="${fgc:+$fgc;}${bgc}"
+         vals=${vals%%;}
 
-        seq0="${vals:+\e[${vals}m}"
-        printf "  %-9s" "${seq0:-(default)}"
-        printf " ${seq0}TEXT\e[m"
-        printf " \e[${vals:+${vals+$vals;}}1mBOLD\e[m"
-     done
-     echo; echo
-  done
+         seq0="${vals:+\e[${vals}m}"
+         printf "  %-9s" "${seq0:-(default)}"
+         printf " ${seq0}TEXT\e[m"
+         printf " \e[${vals:+${vals+$vals;}}1mBOLD\e[m"
+      done
+      echo;
+   done
 }
 
 # From http://misc.flogisoft.com/bash/tip_colors_and_formatting#terminals_compatibility
@@ -209,44 +193,58 @@ for fgbg in 38 48 ; do #Foreground/Background
 done
 }
 
-# Print all 256 terminal colors, one per row.
-aa_256 () {
-  ( x=`tput op` y=`printf %$((${COLUMNS}-6))s`;
-  for i in {0..256};
-  do
-  o=00$i;
-  echo -e ${o:${#o}-3:3} `tput setaf $i;tput setab $i`${y// /=}$x;
-  done )
+# Function to truncate lines that would otherwise wrap in the terminal.
+nowrap() {
+   cut -c-$(tput cols);
 }
 
-# Called by PROMPT_COMMAND to cusotmize the prompt each time it is displayed.
+# Called by PROMPT_COMMAND to customize the prompt each time it is displayed.
 # This permits live updating of the current git branch (provided and styled by
 # get_git_branch).
 set_bash_prompt() {
-  # Get git branch for pwd.
   if [[ $(git symbolic-ref HEAD 2>/dev/null) ]]; then
     get_git_branch
   else
     git_branch=""
   fi
-
-  # Override prompt if root is being used.
-  if [ `whoami` == "root" ]; then
-    export PS1="${git_branch}${RED}\! \\u@${PS1HOST}\\h{$RED}[\\w]> "
-  else
-    export PS1="${git_branch}${RESET}\! \\u@${PS1HOST}\\h${RESET}[\\w]> "
-  fi
-
-  # Set terminal title.
+  MYDIR=`pwd | perl -pe "s|^.*?(user\|home\|User).*?$USER|~|"`
+  export PS1="${git_branch}\! \\u@${PS1HOST}\\h${RESET}[$MYDIR]> "
   printf "\033]0;%s\007" "${HOSTNAME%%.*}"
-
 }
 
 # Function to obtain the current git branch for the current working directory.
-# Note the lack of escape codes on the colors.
 get_git_branch() {
   GITDARKGREY='\033[90m'
   GITRESET='\033[0m'
   git_branch=`git symbolic-ref HEAD 2>/dev/null | sed 's/^.*\/\(.*\)/[Git(\1)]/g'`
   git_branch="${GITDARKGREY}${git_branch}${GITRESET}\n"
 }
+
+# Make SSH key setup a function rather than automatic to keep it from
+# interfering with TotalView's automatic session popup.
+sshgo() {
+  if [ -n "$PS1" ]; then
+    if ! [ -n "$TMUX" ]; then
+      eval "$(ssh-agent -s)" &> /dev/null
+      eval "ssh-add ~/.ssh/id_rsa" &> /dev/null
+    fi
+  fi
+}
+
+# Function to use bc from the command line directly.
+calc () {
+  bc -l <<< "$@"
+}
+
+# Setup proxy toggles.
+proxyon () {
+  export  HTTP_PROXY=
+  export HTTPS_PROXY=
+  export   ALL_PROXY=$HTTP_PROXY
+}
+proxyoff () {
+  export  HTTP_PROXY=
+  export HTTPS_PROXY=
+  export   ALL_PROXY=
+}
+

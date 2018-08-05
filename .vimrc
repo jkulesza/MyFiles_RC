@@ -1,18 +1,33 @@
-" vim:fdm=marker
+"vim:fdm=marker
 
                                                                                                                      " Plugins {{{
-" Permit Pathogen to operate.
+" Permit Pathogen to operate except for blacklisted plugins.
+let g:pathogen_blacklist = []
+call add(g:pathogen_blacklist, 'vim-autotag')
 silent! execute pathogen#infect()
 if exists('g:loaded_pathogen')
   " Change how indented lines are displayed; don't display by default.  Toggle with :IndentLinesToggle.
   let g:indentLine_enabled = 0                                                                                          " Disable indent indication
   let g:indentLine_char = '>'                                                                                           " Change character used to indicate indent depth
   let g:indentLine_indentLevel = 25                                                                                     " Set maximum indent depth indicated
-
+  let g:tex_flavor = 'latex'
+  " let g:vimtex_view_general_viewer = '/Applications/TeX/TeXShop.app/Contents/MacOS/TeXShop'
+  let g:vimtex_view_general_viewer = '/local/Skim.app/Contents/MacOS/Skim'
 endif
+
+" Automatically enable highlighting of ANSI color codes (using the AnsiEsc
+" plugin) if no other syntax is detected.
+autocmd VimEnter *
+\  if exists(":AnsiEsc")
+\|   if !exists('b:current_syntax')
+\|     exe "AnsiEsc"
+\|   endif
+\| endif
+
                                                                                                                      " }}}
                                                                                                                      " Preliminaries {{{
 let mapleader=","                                                                                                       " Use a consenus 'better' leader key
+let maplocalleader=","                                                                                                  " Use a consenus 'better' leader key
 syntax on                                                                                                               " Enable syntax highlighting
 let g:python_highlight_all = 1
 filetype plugin on                                                                                                      " Enable filetype-specific plugin loading (e.g., for nerdcommenter)
@@ -115,7 +130,7 @@ endif
 "autocmd FileType html,xml,cpp,fortran,python match OverLength /\%81v.\+/                                                " Match columns over 80 as 'overlength'
                                                                                                                      " }}}
                                                                                                                      " Set Filetype Autocommands {{{
-autocmd Filetype cpp setlocal textwidth=80 foldmethod=syntax                                                            " Treat C++ specially
+autocmd Filetype cpp setlocal textwidth=80 foldmethod=syntax foldnestmax=1                                              " Treat C++ specially
 autocmd Filetype fortran setlocal textwidth=80 foldmethod=syntax                                                        " Treat Fortran specially
 autocmd Filetype gitcommit setlocal spell textwidth=72                                                                  " Setup editing to work with git
 autocmd Filetype make setlocal noexpandtab                                                                              " Don't expandtab for makefiles
@@ -145,6 +160,14 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
+
+" Navigation mappings for builtin terminal support.
+if (v:version>=801)
+  tnoremap <C-j> <C-w>j
+  tnoremap <C-k> <C-w>k
+  tnoremap <C-h> <C-w>h
+  tnoremap <C-l> <C-w>l
+endif
 
 " Popup menu up/down navigation with j and k (not just Ctrl-N / Ctrl-P)
 inoremap <expr> j pumvisible() ? "\<C-N>" : "j"
@@ -255,9 +278,10 @@ endfunction
 
 " Jump to last position in file (ignoring git commit messages).
 autocmd BufReadPost *
-  \   if expand('%:p') !~# '\m/\.git/' && line("'\"") > 0 && line("'\"") <= line("$")
+  \   if line("'\"") > 0 && line("'\"") <= line("$")
   \|    exe "normal! g`\""
   \|  endif
+autocmd FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
 " Strip trailing whitespace and return cursor to previous position.
 " http://stackoverflow.com/questions/35390415/cursor-jump-in-vim-after-save
@@ -281,16 +305,16 @@ endfun
 
 " Save folds between sessions.
 " https://ebonhand.wordpress.com/2011/03/30/automatically-save-and-load-vim-views-folds/
-augroup AutoSaveFolds
-  autocmd VimLeavePre *
-  \   if expand('%') != '' && &buftype !~ 'nofile'
-  \|    mkview
-  \|  endif
-  autocmd BufRead *
-  \   if expand('%') != '' && &buftype !~ 'nofile'
-  \|    silent loadview
-  \|  endif
-augroup END
+" augroup AutoSaveFolds
+"   autocmd VimLeavePre *
+"   \   if expand('%') != '' && &buftype !~ 'nofile'
+"   \|    mkview
+"   \|  endif
+"   autocmd BufRead *
+"   \   if expand('%') != '' && &buftype !~ 'nofile'
+"   \|    silent loadview
+"   \|  endif
+" augroup END
 
                                                                                                                      " }}}
                                                                                                                      " Load Skeleton Files {{{
@@ -298,13 +322,15 @@ augroup Shebang
 
   " The approach is taken here rather than using something like vim-skeletons
   " because of compound extensions (e.g., .mcnp.inp).
-  autocmd BufNewFile *.cc       r ~/.vim/skeletons/skeleton.cc       | execute "normal! ggdd0"
-  autocmd BufNewFile *.cpp      r ~/.vim/skeletons/skeleton.cpp      | execute "normal! ggdd0"
-  autocmd BufNewFile *.f90      r ~/.vim/skeletons/skeleton.f90      | execute "normal! ggdd$"
-  autocmd BufNewFile *.mcnp.inp r ~/.vim/skeletons/skeleton.mcnp.inp | execute "normal! ggdd$"
-  autocmd BufNewFile *.py       r ~/.vim/skeletons/skeleton.py       | execute "normal! ggdd$"
-  autocmd BufNewFile *.sh       r ~/.vim/skeletons/skeleton.sh       | execute "normal! ggddG$"
-  autocmd BufNewFile *.tex      r ~/.vim/skeletons/skeleton.tex      | execute "normal! ggdd0"
+  autocmd BufNewFile *.cc                                r ~/.vim/skeletons/skeleton.cc       | execute "normal! ggdd0"
+  autocmd BufNewFile *.cpp                               r ~/.vim/skeletons/skeleton.cpp      | execute "normal! ggdd0"
+  autocmd BufNewFile *.f90                               r ~/.vim/skeletons/skeleton.f90      | execute "normal! ggdd$"
+  autocmd BufNewFile *.mcnp.inp                          r ~/.vim/skeletons/skeleton.mcnp.inp | execute "normal! ggdd$"
+  autocmd BufNewFile *.py                                r ~/.vim/skeletons/skeleton.py       | execute "normal! ggdd$"
+  autocmd BufNewFile *.sh                                r ~/.vim/skeletons/skeleton.sh       | execute "normal! ggddG$"
+  autocmd BufNewFile *.tex                               r ~/.vim/skeletons/skeleton.tex      | execute "normal! ggdd0"
+  autocmd BufNewFile *.tikz.tex execute "normal! ggdG" | r ~/.vim/skeletons/skeleton.tikz.tex | execute "normal! ggdd0"
+  autocmd BufNewFile *.alg.tex  execute "normal! ggdG" | r ~/.vim/skeletons/skeleton.alg.tex  | execute "normal! ggdd0"
 
 augroup END
                                                                                                                      " }}}
@@ -312,81 +338,95 @@ augroup END
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom Color General Options
 
-set t_Co=256
+" set t_Co=256
 set background=dark
 highlight clear
 if exists("syntax on")
 	syntax reset
 endif
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Mine, Based on Torte Rev. 1.1
-" Maintainer:  Joel Kulesza <jkulesza@lanl.gov>
-"
 let g:colors_name="mine"
-hi Normal          guifg=#dadada       guibg=Black         gui=NONE            ctermfg=252         ctermbg=Black       cterm=NONE
-hi IncSearch       guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
-hi Search          guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
-hi Visual          guifg=Black         guibg=#949494       gui=NONE            ctermfg=Black       ctermbg=246         cterm=NONE
-hi Cursor          guifg=Black         guibg=#00ff00       gui=NONE            ctermfg=Black       ctermbg=010         cterm=NONE
-hi CursorLine      guifg=NONE          guibg=NONE          gui=UNDERLINE       ctermfg=NONE        ctermbg=NONE        cterm=UNDERLINE
-hi CursorColumn    guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
-hi Special         guifg=#af5f00       guibg=NONE          gui=NONE            ctermfg=130         ctermbg=NONE        cterm=NONE
-hi Comment         guifg=#0087ff       guibg=NONE          gui=NONE            ctermfg=033         ctermbg=NONE        cterm=NONE
-hi Constant        guifg=#ffa0a0       guibg=NONE          gui=NONE            ctermfg=013         ctermbg=NONE        cterm=NONE
-hi Identifier      guifg=#40ffff       guibg=NONE          gui=NONE            ctermfg=014         ctermbg=NONE        cterm=NONE
-hi PreProc         guifg=#ff80ff       guibg=NONE          gui=NONE            ctermfg=081         ctermbg=NONE        cterm=NONE
-hi Type            guifg=#60ff60       guibg=NONE          gui=NONE            ctermfg=121         ctermbg=NONE        cterm=NONE
-hi StatusLine      guifg=White         guibg=#262626       gui=NONE            ctermfg=White       ctermbg=235         cterm=NONE
-hi StatusLineNC    guifg=#3a3a3a       guibg=#080808       gui=NONE            ctermfg=237         ctermbg=232         cterm=NONE
-hi VertSplit       guifg=#808080       guibg=#262626       gui=NONE            ctermfg=232         ctermbg=235         cterm=NONE
-hi Statement       guifg=#ffff00       guibg=NONE          gui=NONE            ctermfg=226         ctermbg=NONE        cterm=NONE
-hi ColorColumn     guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
-hi Folded          guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
-hi Pmenu           guifg=NONE          guibg=#080808       gui=NONE            ctermfg=NONE        ctermbg=232         cterm=NONE
-hi PmenuSel        guifg=NONE          guibg=#262626       gui=NONE            ctermfg=NONE        ctermbg=235         cterm=NONE
-hi DiffAdd         guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=022         cterm=NONE
-hi DiffChange      guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=018         cterm=NONE
-hi DiffText        guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=163         cterm=NONE
-hi DiffDelete      guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=052         cterm=NONE
-hi SpellBad        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
-hi SpellCap        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
-hi SpellRare       guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
-hi SpellLocal      guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
 
-set fillchars+=vert:\ " Remove pipes from vertical split delimiter
+if g:colors_name == "mine"
 
-" Highlight the status bar when in insert mode (https://github.com/chrishunt/dot-files/blob/master/.vimrc).
-"if version >= 700
-"  au InsertEnter * hi StatusLine                                               ctermfg=White       ctermbg=238
-"  au InsertLeave * hi StatusLine                                               ctermfg=White       ctermbg=235
-"endif
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  " Mine, Based on Torte Rev. 1.1
+  " Maintainer:  Joel Kulesza <jkulesza@lanl.gov>
+  "
+  hi Normal            guifg=#dadada       guibg=Black         gui=NONE            ctermfg=252         ctermbg=Black       cterm=NONE
+  hi IncSearch         guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
+  hi Search            guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
+  hi Visual            guifg=Black         guibg=#949494       gui=NONE            ctermfg=Black       ctermbg=246         cterm=NONE
+  hi Cursor            guifg=Black         guibg=#00ff00       gui=NONE            ctermfg=Black       ctermbg=010         cterm=NONE
+  hi CursorLine        guifg=NONE          guibg=NONE          gui=UNDERLINE       ctermfg=NONE        ctermbg=NONE        cterm=UNDERLINE
+  hi CursorColumn      guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
+  hi Special           guifg=#af5f00       guibg=NONE          gui=NONE            ctermfg=130         ctermbg=NONE        cterm=NONE
+  hi Comment           guifg=#0087ff       guibg=NONE          gui=NONE            ctermfg=033         ctermbg=NONE        cterm=NONE
+  hi Constant          guifg=#ffa0a0       guibg=NONE          gui=NONE            ctermfg=013         ctermbg=NONE        cterm=NONE
+  hi Identifier        guifg=#40ffff       guibg=NONE          gui=NONE            ctermfg=014         ctermbg=NONE        cterm=NONE
+  hi PreProc           guifg=#ff80ff       guibg=NONE          gui=NONE            ctermfg=081         ctermbg=NONE        cterm=NONE
+  hi Type              guifg=#60ff60       guibg=NONE          gui=NONE            ctermfg=121         ctermbg=NONE        cterm=NONE
+  hi StatusLine        guifg=White         guibg=#262626       gui=NONE            ctermfg=White       ctermbg=235         cterm=NONE
+  hi StatusLineNC      guifg=#3a3a3a       guibg=#080808       gui=NONE            ctermfg=237         ctermbg=232         cterm=NONE
+  hi StatusLineTerm    guifg=White         guibg=#262626       gui=NONE            ctermfg=White       ctermbg=235         cterm=NONE
+  hi StatusLineTermNC  guifg=#3a3a3a       guibg=#080808       gui=NONE            ctermfg=237         ctermbg=232         cterm=NONE
+  hi VertSplit         guifg=#808080       guibg=#262626       gui=NONE            ctermfg=232         ctermbg=235         cterm=NONE
+  hi Statement         guifg=#ffff00       guibg=NONE          gui=NONE            ctermfg=226         ctermbg=NONE        cterm=NONE
+  hi ColorColumn       guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
+  hi Folded            guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
+  hi Pmenu             guifg=NONE          guibg=#080808       gui=NONE            ctermfg=NONE        ctermbg=232         cterm=NONE
+  hi PmenuSel          guifg=NONE          guibg=#262626       gui=NONE            ctermfg=NONE        ctermbg=235         cterm=NONE
+  hi DiffAdd           guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=022         cterm=NONE
+  hi DiffChange        guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=018         cterm=NONE
+  hi DiffText          guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=163         cterm=NONE
+  hi DiffDelete        guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=052         cterm=NONE
+  hi SpellBad          guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+  hi SpellCap          guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+  hi SpellRare         guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+  hi SpellLocal        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
 
-" Link defined type colors to other types.
-hi link String         Constant
-hi link Character      Constant
-hi link Number         Constant
-hi link Boolean        Constant
-hi link Float          Constant
-hi link Function       Identifier
-hi link Conditional    Statement
-hi link Repeat         Statement
-hi link Label          Statement
-hi link Operator       Statement
-hi link Keyword        Statement
-hi link Exception      Statement
-hi link Include        PreProc
-hi link Define         PreProc
-hi link Macro          PreProc
-hi link PreCondit      PreProc
-hi link StorageClass   Type
-hi link Structure      Type
-hi link TypeDef        Type
-hi link SpecialChar    Special
-hi link Tag            Special
-hi link Delimiter      Special
-hi link SpecialComment Special
-hi link Debug          Special
+  set fillchars+=vert:\ " Remove pipes from vertical split delimiter
+
+  " Highlight the status bar when in insert mode (https://github.com/chrishunt/dot-files/blob/master/.vimrc).
+  "if version >= 700
+  "  au InsertEnter * hi StatusLine                                               ctermfg=White       ctermbg=238
+  "  au InsertLeave * hi StatusLine                                               ctermfg=White       ctermbg=235
+  "endif
+
+  " Link defined type colors to other types.
+  hi link String         Constant
+  hi link Character      Constant
+  hi link Number         Constant
+  hi link Boolean        Constant
+  hi link Float          Constant
+  hi link Function       Identifier
+  hi link Conditional    Statement
+  hi link Repeat         Statement
+  hi link Label          Statement
+  hi link Operator       Statement
+  hi link Keyword        Statement
+  hi link Exception      Statement
+  hi link Include        PreProc
+  hi link Define         PreProc
+  hi link Macro          PreProc
+  hi link PreCondit      PreProc
+  hi link StorageClass   Type
+  hi link Structure      Type
+  hi link TypeDef        Type
+  hi link SpecialChar    Special
+  hi link Tag            Special
+  hi link Delimiter      Special
+  hi link SpecialComment Special
+  hi link Debug          Special
+
+else
+
+  " syntax enable
+  " set background=dark
+  " let g:solarized_termcolors=256
+  " colorscheme solarized
+
+endif
 
 " Make color table for easy reference.
 function! PrePad(s,amt,...)
@@ -471,4 +511,3 @@ autocmd VimEnter * if @% == '.vimrc' | call HighlightColors() | endif
 "ctermbg=250 #bcbcbc ctermbg=251 #c6c6c6 ctermbg=252 #d0d0d0 ctermbg=253 #dadada ctermbg=254 #e4e4e4 ctermbg=255 #eeeeee
 
                                                                                                                       " }}}
-
