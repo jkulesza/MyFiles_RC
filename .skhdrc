@@ -1,8 +1,8 @@
 # move window
-cmd + alt - h : chunkc tiling::window --warp west
-cmd + alt - j : chunkc tiling::window --warp south
-cmd + alt - k : chunkc tiling::window --warp north
-cmd + alt - l : chunkc tiling::window --warp east
+cmd + alt - h : chunkc tiling::window --swap west
+cmd + alt - j : chunkc tiling::window --swap south
+cmd + alt - k : chunkc tiling::window --swap north
+cmd + alt - l : chunkc tiling::window --swap east
 
 cmd + alt - 0x21 : chunkc tiling::window --focus prev
 cmd + alt - 0x1E : chunkc tiling::window --focus next
