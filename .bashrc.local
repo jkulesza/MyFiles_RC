@@ -136,62 +136,62 @@ PROMPT_COMMAND='set_bash_prompt'
 ################################################################################
 
 # View terminal colors / color codes.
-colors() {
-   local fgc bgc vals seq0
+# color() {
+#    local fgc bgc vals seq0
 
-   printf "Color escapes are %s\n" '\e[${value};...;${value}m'
-   printf "Values 30..37 are \e[33mforeground colors\e[m\n"
-   printf "Values 40..47 are \e[43mbackground colors\e[m\n"
-   printf "Value  1 gives a  \e[1mbold-faced look\e[m\n\n"
+#    printf "Color escapes are %s\n" '\e[${value};...;${value}m'
+#    printf "Values 30..37 are \e[33mforeground colors\e[m\n"
+#    printf "Values 40..47 are \e[43mbackground colors\e[m\n"
+#    printf "Value  1 gives a  \e[1mbold-faced look\e[m\n\n"
 
-   # foreground colors
-   for fgc in {30..37}; do
-      # background colors
-      for bgc in {40..47}; do
-         fgc=${fgc#37} # white
-         bgc=${bgc#40} # black
+#    # foreground colors
+#    for fgc in {30..37}; do
+#       # background colors
+#       for bgc in {40..47}; do
+#          fgc=${fgc#37} # white
+#          bgc=${bgc#40} # black
 
-         vals="${fgc:+$fgc;}${bgc}"
-         vals=${vals%%;}
+#          vals="${fgc:+$fgc;}${bgc}"
+#          vals=${vals%%;}
 
-         seq0="${vals:+\e[${vals}m}"
-         printf "  %-9s" "${seq0:-(default)}"
-         printf " ${seq0}TEXT\e[m"
-         printf " \e[${vals:+${vals+$vals;}}1mBOLD\e[m"
-      done
-      echo;
-   done
-}
-
-# From http://misc.flogisoft.com/bash/tip_colors_and_formatting#terminals_compatibility
-colors16() {
-for clbg in {40..47} {100..107} 49 ; do
-	#Foreground
-	for clfg in {30..37} {90..97} 39 ; do
-		#Formatting
-		for attr in 0 1 2 4 5 7 ; do
-			#Print the result
-			echo -en "\e[${attr};${clbg};${clfg}m ^[${attr};${clbg};${clfg}m \e[0m"
-		done
-		echo #Newline
-	done
-done
-}
+#          seq0="${vals:+\e[${vals}m}"
+#          printf "  %-9s" "${seq0:-(default)}"
+#          printf " ${seq0}TEXT\e[m"
+#          printf " \e[${vals:+${vals+$vals;}}1mBOLD\e[m"
+#       done
+#       echo;
+#    done
+# }
 
 # From http://misc.flogisoft.com/bash/tip_colors_and_formatting#terminals_compatibility
-colors256() {
-for fgbg in 38 48 ; do #Foreground/Background
-	for color in {0..256} ; do #Colors
-		#Display the color
-		echo -en "\e[${fgbg};5;${color}m ${color}\t\e[0m"
-		#Display 10 colors per lines
-		if [ $((($color + 1) % 10)) == 0 ] ; then
-			echo #New line
-		fi
-	done
-	echo #New line
-done
-}
+# colors16() {
+# for clbg in {40..47} {100..107} 49 ; do
+# 	#Foreground
+# 	for clfg in {30..37} {90..97} 39 ; do
+# 		#Formatting
+# 		for attr in 0 1 2 4 5 7 ; do
+# 			#Print the result
+# 			echo -en "\e[${attr};${clbg};${clfg}m ^[${attr};${clbg};${clfg}m \e[0m"
+# 		done
+# 		echo #Newline
+# 	done
+# done
+# }
+
+# From http://misc.flogisoft.com/bash/tip_colors_and_formatting#terminals_compatibility
+# colors256() {
+# for fgbg in 38 48 ; do #Foreground/Background
+# 	for color in {0..256} ; do #Colors
+# 		#Display the color
+# 		echo -en "\e[${fgbg};5;${color}m ${color}\t\e[0m"
+# 		#Display 10 colors per lines
+# 		if [ $((($color + 1) % 10)) == 0 ] ; then
+# 			echo #New line
+# 		fi
+# 	done
+# 	echo #New line
+# done
+# }
 
 # Function to truncate lines that would otherwise wrap in the terminal.
 nowrap() {
@@ -236,6 +236,15 @@ calc () {
   bc -l <<< "$@"
 }
 
+rename_images() {
+  for fil in *.jpg *.JPG; do datepath="$(identify -verbose $fil \
+    | grep DateTimeOri | awk '{print $2"_"$3 }' \
+    | sed s%:%_%g)"; mv -v $fil $datepath.jpg; done
+  # for fil in *.png *.PNG; do datepath="$(identify -verbose $fil \
+  #   | grep DateTimeOri | awk '{print $2"_"$3 }' \
+  #   | sed s%:%_%g)"; mv -v $fil $datepath.png; done
+}
+
 # Setup proxy toggles.
 proxyon () {
   export  HTTP_PROXY=
@@ -248,3 +257,19 @@ proxyoff () {
   export   ALL_PROXY=
 }
 
+# added by Anaconda3 2018.12 installer
+# >>> conda init >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$(CONDA_REPORT_ERRORS=false '/local/anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    \eval "$__conda_setup"
+else
+    if [ -f "/local/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/local/anaconda3/etc/profile.d/conda.sh"
+        CONDA_CHANGEPS1=false conda activate base
+    else
+        \export PATH="/local/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda init <<<

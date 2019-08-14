@@ -6,8 +6,6 @@ alias ll='ls -G'
 alias resetlaunchpad="defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock"
 alias resetcamera="sudo killall VDCAssistant"
 
-export PATH="/sw/anaconda3/bin:/sw/bin:$PATH"
-
 export HOMEBREW_CASK_OPTS="--appdir=/local"
 
 if [ -f ~/.ssh/id_rsa_github_jkulesza ]; then
@@ -24,8 +22,8 @@ if [ -f ~/.ssh/id_rsa_synology_jkulesza ]; then
 fi
 
 if [ -d $HOME/RSync/Docs/ ]; then
-  alias rsyncdocs='rsync -azP --delete --exclude ".DS_Store" --exclude "@eaDir" $HOME/RSync/Docs/. jkulesza@192.168.0.100:/volume1/Docs/.'
+  alias rsyncdocs='rsync -azP --delete --exclude ".DS_Store" --exclude "@eaDir" $HOME/RSync/Docs/. jkulesza@192.168.0.100:/volume1/RSync/Docs/.'
 fi
 if [ -d $HOME/RSync/photos/ ]; then
-  alias rsyncphotos='rsync -azP --delete --exclude ".DS_Store" --exclude "@eaDir" $HOME/RSync/photos/. jkulesza@192.168.0.100:/volume1/photos/.'
+  alias rsyncphotos='rsync -azP --delete --exclude ".DS_Store" --exclude "@eaDir" $HOME/RSync/photos/. jkulesza@192.168.0.100:/volume1/RSync/photos/.'
 fi

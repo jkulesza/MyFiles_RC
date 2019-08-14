@@ -53,6 +53,9 @@ function fish_prompt
   echo (whoami)"@$c_host"$__fish_prompt_hostname"$c_normal""["$longpwd"]> "
 end
 
+set -U fish_user_paths /local/brew/bin $fish_user_paths
+set -U fish_user_paths /local/brew/opt/python/libexec/bin/ $fish_user_paths
+set -U fish_user_paths /local/brew/opt/sphinx-doc/bin $fish_user_paths
 
 alias g='git'
 alias la='ls -al'
