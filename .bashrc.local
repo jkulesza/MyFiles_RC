@@ -34,6 +34,9 @@ export HTTPS_PROXY=
 # Setup proxy for Homebrew.
 export   ALL_PROXY=$HTTP_PROXY
 
+# Set ls colors.
+export LSCOLORS="exfxcxdxbxegedabagacad"
+
 # Set default editor to system vim.
 alias vi=vim
 export EDITOR=vim
@@ -92,7 +95,7 @@ export PS1HOST=$WHITE
 # Attempt to force correct line-wrapping behavior by correctly recognizing the
 # window dimensions.  Status can be checked with `shopt  | grep checkwinsize`.
 # From: http://unix.stackexchange.com/questions/105958/terminal-prompt-not-wrapping-correctly
-# shopt -s checkwinsize
+shopt -s checkwinsize &> /dev/null
 
 # Set command line to respond (somewhat) like vi
 set -o vi

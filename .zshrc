@@ -19,7 +19,6 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
-
 alias la='ls -al'
 
 function PS1HOST {
@@ -30,4 +29,6 @@ PS1='$(git_prompt_info)%n@$(PS1HOST)[%~]> '
 RPS1=''
 
 bindkey ^F forward-char
+
+export LSCOLORS="exfxcxdxbxegedabagacad"
 
