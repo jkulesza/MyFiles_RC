@@ -1,4 +1,4 @@
-# source $HOME/.bashrc
+source $HOME/.bashrc
 
 export ZSH="$HOME/.oh-my-zsh"
 

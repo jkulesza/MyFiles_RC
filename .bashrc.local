@@ -14,7 +14,7 @@ alias :q=exit
 alias c='cd && clear'
 alias g='git'
 alias h='history | tail'
-complete -d cd # Only perform autocompletion on `cd` for directories.
+# complete -d cd # Only perform autocompletion on `cd` for directories.
 
 alias cd..='cd ..'
 alias path='echo $PATH | tr ":" "\n" | sort | uniq | sort'
@@ -92,7 +92,7 @@ export PS1HOST=$WHITE
 # Attempt to force correct line-wrapping behavior by correctly recognizing the
 # window dimensions.  Status can be checked with `shopt  | grep checkwinsize`.
 # From: http://unix.stackexchange.com/questions/105958/terminal-prompt-not-wrapping-correctly
-shopt -s checkwinsize
+# shopt -s checkwinsize
 
 # Set command line to respond (somewhat) like vi
 set -o vi
