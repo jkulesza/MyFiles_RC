@@ -22,7 +22,7 @@ source $ZSH/oh-my-zsh.sh
 alias la='ls -al'
 
 function PS1HOST {
-  echo "%{$fg[black]%}%{$bg[blue]%}%m%{$reset_color%}"
+  echo "%{$fg[black]%}%{$BG[039]%}%m%{$reset_color%}"
 }
 
 PS1='$(git_prompt_info)%n@$(PS1HOST)[%~]> '
