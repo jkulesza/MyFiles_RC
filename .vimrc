@@ -4,15 +4,13 @@
 " Permit Pathogen to operate except for blacklisted plugins.
 let g:pathogen_blacklist = []
 call add(g:pathogen_blacklist, 'vim-autotag')
+call add(g:pathogen_blacklist, 'black')
 silent! execute pathogen#infect()
 if exists('g:loaded_pathogen')
   " Change how indented lines are displayed; don't display by default.  Toggle with :IndentLinesToggle.
   let g:indentLine_enabled = 0                                                                                          " Disable indent indication
   let g:indentLine_char = '>'                                                                                           " Change character used to indicate indent depth
   let g:indentLine_indentLevel = 25                                                                                     " Set maximum indent depth indicated
-  let g:tex_flavor = 'latex'
-  " let g:vimtex_view_general_viewer = '/Applications/TeX/TeXShop.app/Contents/MacOS/TeXShop'
-  let g:vimtex_view_general_viewer = '/local/Skim.app/Contents/MacOS/Skim'
 endif
 
 " Automatically enable highlighting of ANSI color codes (using the AnsiEsc
@@ -26,8 +24,9 @@ autocmd VimEnter *
 
                                                                                                                      " }}}
                                                                                                                      " Preliminaries {{{
-let mapleader=","                                                                                                       " Use a consenus 'better' leader key
-let maplocalleader=","                                                                                                  " Use a consenus 'better' leader key
+nnoremap <SPACE> <Nop>
+" let mapleader=","                                                                                                       " Use a consenus 'better' leader key
+" let maplocalleader=","                                                                                                  " Use a consenus 'better' leader key
 syntax on                                                                                                               " Enable syntax highlighting
 let g:python_highlight_all = 1
 filetype plugin on                                                                                                      " Enable filetype-specific plugin loading (e.g., for nerdcommenter)
@@ -75,7 +74,7 @@ let g:markdown_folding=1                                                        
 set foldopen-=block
                                                                                                                      " }}}
                                                                                                                      " Differencing {{{
-set diffopt+=iwhite                                                                                                     " Ignore whitespace within vimdiff
+" set diffopt+=iwhite                                                                                                     " Ignore whitespace within vimdiff
                                                                                                                      " }}}
                                                                                                                      " Searching & Maneuvering {{{
 set hlsearch incsearch ignorecase smartcase                                                                             " Perform incremental searching and highlight results
@@ -101,8 +100,10 @@ set winaltkeys=no                                                               
 set laststatus=2                                                                                                        " Always show status line
 set statusline=
 set statusline+=%{exists('g:loaded_fugitive')?fugitive#statusline():''}                                                 " Show fugitive, if it's available
-set statusline+=[%F%m%r%h%w]
-set statusline+=%=[%l,%v][%p%%][LEN=%L]
+set statusline+=[%{strlen(&fenc)?&fenc:&enc}]                                                                           " File Encoding
+set statusline+=%y                                                                                                      " File Type
+set statusline+=[%F%m%r%h%w]                                                                                            " Filename and editing status
+set statusline+=%=[%l,%v][%p%%][LEN=%L]                                                                                 " Position & length information
                                                                                                                      " }}}
                                                                                                                      " Printing Options {{{
 set printheader=%<%F%m%=Page\ %N                                                                                        " Configure hardcopy header
@@ -113,6 +114,7 @@ set printoptions=paper:letter,portrait:n,left:0.25in,right:0.25in,top:0.25in,bot
 let g:netrw_sort_sequence=''                                                                                            " Remove file extensions from sort considerations
 let g:netrw_sort_options='i'                                                                                            " Sort truly alphabetically (case insensitively)
 let g:netrw_liststyle='1'                                                                                               " List with sizes / dates (long)
+let g:netrw_keepdir='0'                                                                                                 " Let netrw directory wander from the current working directory
                                                                                                                      " }}}
                                                                                                                      " Perform Coloring of Programming Danger Zone {{{
 set cursorline                                                                                                          " Highlight the current line
@@ -136,8 +138,9 @@ autocmd Filetype gitcommit setlocal spell textwidth=72                          
 autocmd Filetype make setlocal noexpandtab                                                                              " Don't expandtab for makefiles
 autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4                                                   " Change tab behavior to accomodate Python style guidance
 autocmd BufNewFile,BufFilePre,BufRead *.md setlocal filetype=markdown                                                   " Enable markdown behavior for .md files
-autocmd BufNewFile,BufRead *.lyx set filetype=lyx                                                                       " Manually set LyX filetypes, mainly to avoid end of line fixups
+autocmd BufNewFile,BufRead,BufEnter *.lyx set filetype=lyx                                                              " Manually set LyX filetypes, mainly to avoid end of line fixups
 autocmd BufRead *.vimrc set foldmethod=marker                                                                           " Fold the .vimrc properly
+autocmd BufWritePre *.py if exists(':Black') | execute ':Black' | endif                                                 " Apply black styling, if available
                                                                                                                      " }}}
                                                                                                                      " On-the-fly Spelling Correction and Quick Edit Customization {{{
 iab teh the
@@ -186,7 +189,7 @@ map <F7> :setlocal spell! spelllang=en_us<CR>"                                  
 set spellcapcheck=                                                                                                    " Disable Spell Checking for Capitalization
 map <F8> :set makeprg=proselint\ %<CR>:silent make!\|redraw!\|cw<CR>"                                                   Run proselint on Current File and open quickfix list
 
-map <F9> <Nop>"
+map <F9> :set ft=mcnp<CR>"                                                                                              Setup for MCNP syntax highlighting
 "map <F10>
 "map <F11>
 "map <F12>
@@ -288,12 +291,14 @@ autocmd FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1
 function! <SID>StripTrailingWhitespaces()
   let blacklist = ['lyx']
   if index(blacklist, &filetype) == 0
+    echom "Remark: did not strip end-of-line white space on write."
     return
   else
     let l = line(".")
     let c = col(".")
     %s/\s\+$//e
     call cursor(l, c)
+    echom "Remark: stripped end-of-line white space on write."
     return
   endif
 endfun
@@ -353,38 +358,38 @@ if g:colors_name == "mine"
   " Mine, Based on Torte Rev. 1.1
   " Maintainer:  Joel Kulesza <jkulesza@lanl.gov>
   "
-  hi Normal            guifg=#dadada       guibg=Black         gui=NONE            ctermfg=252         ctermbg=Black       cterm=NONE
-  hi IncSearch         guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
-  hi Search            guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
-  hi Visual            guifg=Black         guibg=#949494       gui=NONE            ctermfg=Black       ctermbg=246         cterm=NONE
-  hi Cursor            guifg=Black         guibg=#00ff00       gui=NONE            ctermfg=Black       ctermbg=010         cterm=NONE
-  hi CursorLine        guifg=NONE          guibg=NONE          gui=UNDERLINE       ctermfg=NONE        ctermbg=NONE        cterm=UNDERLINE
-  hi CursorColumn      guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
-  hi Special           guifg=#af5f00       guibg=NONE          gui=NONE            ctermfg=130         ctermbg=NONE        cterm=NONE
+
+  hi ColorColumn       guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
   hi Comment           guifg=#0087ff       guibg=NONE          gui=NONE            ctermfg=033         ctermbg=NONE        cterm=NONE
   hi Constant          guifg=#ffa0a0       guibg=NONE          gui=NONE            ctermfg=013         ctermbg=NONE        cterm=NONE
+  hi Cursor            guifg=Black         guibg=#00ff00       gui=NONE            ctermfg=Black       ctermbg=010         cterm=NONE
+  hi CursorColumn      guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
+  hi CursorLine        guifg=NONE          guibg=NONE          gui=UNDERLINE       ctermfg=NONE        ctermbg=NONE        cterm=UNDERLINE
+  hi DiffAdd           guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=022         cterm=NONE
+  hi DiffChange        guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=018         cterm=NONE
+  hi DiffDelete        guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=052         cterm=NONE
+  hi DiffText          guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=163         cterm=NONE
+  hi Folded            guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
   hi Identifier        guifg=#40ffff       guibg=NONE          gui=NONE            ctermfg=014         ctermbg=NONE        cterm=NONE
+  hi IncSearch         guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
+  hi Normal            guifg=#dadada       guibg=Black         gui=NONE            ctermfg=252         ctermbg=Black       cterm=NONE
+  hi Pmenu             guifg=NONE          guibg=#080808       gui=NONE            ctermfg=NONE        ctermbg=232         cterm=NONE
+  hi PmenuSel          guifg=NONE          guibg=#262626       gui=NONE            ctermfg=NONE        ctermbg=235         cterm=NONE
   hi PreProc           guifg=#ff80ff       guibg=NONE          gui=NONE            ctermfg=081         ctermbg=NONE        cterm=NONE
-  hi Type              guifg=#60ff60       guibg=NONE          gui=NONE            ctermfg=121         ctermbg=NONE        cterm=NONE
+  hi Search            guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
+  hi Special           guifg=#af5f00       guibg=NONE          gui=NONE            ctermfg=130         ctermbg=NONE        cterm=NONE
+  hi SpellBad          guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+  hi SpellCap          guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+  hi SpellLocal        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+  hi SpellRare         guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
+  hi Statement         guifg=#ffff00       guibg=NONE          gui=NONE            ctermfg=226         ctermbg=NONE        cterm=NONE
   hi StatusLine        guifg=White         guibg=#262626       gui=NONE            ctermfg=White       ctermbg=235         cterm=NONE
   hi StatusLineNC      guifg=#3a3a3a       guibg=#080808       gui=NONE            ctermfg=237         ctermbg=232         cterm=NONE
   hi StatusLineTerm    guifg=White         guibg=#262626       gui=NONE            ctermfg=White       ctermbg=235         cterm=NONE
   hi StatusLineTermNC  guifg=#3a3a3a       guibg=#080808       gui=NONE            ctermfg=237         ctermbg=232         cterm=NONE
+  hi Type              guifg=#60ff60       guibg=NONE          gui=NONE            ctermfg=121         ctermbg=NONE        cterm=NONE
   hi VertSplit         guifg=#808080       guibg=#262626       gui=NONE            ctermfg=232         ctermbg=235         cterm=NONE
-  hi Statement         guifg=#ffff00       guibg=NONE          gui=NONE            ctermfg=226         ctermbg=NONE        cterm=NONE
-  hi ColorColumn       guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
-  hi Folded            guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
-  hi Pmenu             guifg=NONE          guibg=#080808       gui=NONE            ctermfg=NONE        ctermbg=232         cterm=NONE
-  hi PmenuSel          guifg=NONE          guibg=#262626       gui=NONE            ctermfg=NONE        ctermbg=235         cterm=NONE
-  hi DiffAdd           guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=022         cterm=NONE
-  hi DiffChange        guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=018         cterm=NONE
-  hi DiffText          guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=163         cterm=NONE
-  hi DiffDelete        guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=052         cterm=NONE
-  hi SpellBad          guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
-  hi SpellCap          guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
-  hi SpellRare         guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
-  hi SpellLocal        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
-
+  hi Visual            guifg=Black         guibg=#949494       gui=NONE            ctermfg=Black       ctermbg=246         cterm=NONE
   set fillchars+=vert:\ " Remove pipes from vertical split delimiter
 
   " Highlight the status bar when in insert mode (https://github.com/chrishunt/dot-files/blob/master/.vimrc).

@@ -13,11 +13,6 @@ setterm -blength 0
 xset s off
 xset s noblank
 
-if [ -f ~/.ssh/id_rsa_github_jkulesza ]; then
-  eval "$(ssh-agent -s)" &> /dev/null
-  ssh-add ~/.ssh/id_rsa_github_jkulesza &> /dev/null
-fi
-
 # Handle backspacing appropriately.
 if [ -t 0 ]; then
    stty erase ^?

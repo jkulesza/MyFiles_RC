@@ -1,34 +1,17 @@
-source $HOME/.bashrc
+source $HOME/.zshrc.local
 
-export ZSH="$HOME/.oh-my-zsh"
-
-HYPHEN_INSENSITIVE="true"
-DISABLE_AUTO_UPDATE="true"
-ENABLE_CORRECTION="true"
-COMPLETION_WAITING_DOTS="true"
-DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-plugins=(
-  git
-  osx
-  vi-mode
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-)
-
-source $ZSH/oh-my-zsh.sh
-alias la='ls -al'
-
-function PS1HOST {
-  echo "%{$fg[black]%}%{$BG[039]%}%m%{$reset_color%}"
-}
-
-PS1='$(git_prompt_info)%n@$(PS1HOST)[%~]> '
-RPS1=''
-
-bindkey ^F forward-char
-
-export LSCOLORS="exfxcxdxbxegedabagacad"
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/jkulesza/Applications/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/jkulesza/Applications/anaconda3/etc/profile.d/conda.sh" ]; then
+        . "/Users/jkulesza/Applications/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/jkulesza/Applications/anaconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
 

@@ -4,23 +4,26 @@
   email = jkulesza@gmail.com
   name = Joel A. Kulesza
 [push]
-  default = simple
+  default = matching
 [branch]
   autosetuprebase = always
 [commit]
   template = ~/.gitcommittemplate.txt
 [diff]
   tool = vimdiff
+  renameLimit = 15000
 [difftool]
   prompt = false
+  trustExitCode = true
 [filter "media"]
 	clean = git media clean %f
 	smudge = git media smudge %f
 	required = true
 [filter "lfs"]
-	smudge = git-lfs smudge -- %f
-	required = true
 	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+	required = true
 [alias]
   lg0 = log         --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)%ad%C(reset) - %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all --date=short
   lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ad, %ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all --date=short
@@ -34,4 +37,9 @@
 [core]
 	trustctime = false
 	excludesfile = /Users/jkulesza/.gitignore_global
-
+[pager]
+  branch = false
+[rerere]
+  enabled = 1
+[mergetool]
+  trustExitCode = true

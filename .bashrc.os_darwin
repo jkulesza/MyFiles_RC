@@ -1,24 +1,17 @@
 #!/bin/bash
 
-alias la='ls -G -al'
-alias ls='ls -G'
-alias ll='ls -G'
-alias resetlaunchpad="defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock"
-alias resetcamera="sudo killall VDCAssistant"
-
+export BREWDIR="$HOME/Applications/brew"
+export ANACONDADIR="$HOME/Applications/anaconda3"
 export HOMEBREW_CASK_OPTS="--appdir=/local"
 
-if [ -f ~/.ssh/id_rsa_github_jkulesza ]; then
-  ssh-add ~/.ssh/id_rsa_github_jkulesza &> /dev/null
-fi
-if [ -f ~/.ssh/id_rsa_gitlab_jkulesza ]; then
-  ssh-add ~/.ssh/id_rsa_gitlab_jkulesza &> /dev/null
-fi
-if [ -f ~/.ssh/id_rsa_bitbucket_jkulesza ]; then
-  ssh-add ~/.ssh/id_rsa_bitbucket_jkulesza &> /dev/null
-fi
-if [ -f ~/.ssh/id_rsa_synology_jkulesza ]; then
-  ssh-add ~/.ssh/id_rsa_synology_jkulesza &> /dev/null
+alias ls='ls -G'
+alias la='ls -al'
+alias resetlaunchpad="defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock"
+alias resetmail="defaults write com.apple.mail DisableInlineAttachmentViewing -bool False"
+alias resetcamera="sudo killall VDCAssistant"
+
+if [ -d $HOME/Applications/LyX.app/Contents/MacOS ]; then
+  export PATH=$HOME/Applications/LyX.app/Contents/MacOS:$PATH
 fi
 
 if [ -d $HOME/RSync/Docs/ ]; then

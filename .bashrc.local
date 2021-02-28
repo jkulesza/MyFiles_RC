@@ -14,10 +14,9 @@ alias :q=exit
 alias c='cd && clear'
 alias g='git'
 alias h='history | tail'
-# complete -d cd # Only perform autocompletion on `cd` for directories.
 
 alias cd..='cd ..'
-alias path='echo $PATH | tr ":" "\n" | sort | uniq | sort'
+alias path='echo $PATH | tr ":" "\n" | cat -n'
 alias lsd='dirs | tr " " "\n"'
 alias jn='jupyter notebook'
 alias lmk='latexmk -pvc -pdf -interaction=nonstopmode '
@@ -33,6 +32,7 @@ export  HTTP_PROXY=
 export HTTPS_PROXY=
 # Setup proxy for Homebrew.
 export   ALL_PROXY=$HTTP_PROXY
+export    NO_PROXY=127.0.0.1,localhost,.local
 
 # Set ls colors.
 export LSCOLORS="exfxcxdxbxegedabagacad"
@@ -40,6 +40,9 @@ export LSCOLORS="exfxcxdxbxegedabagacad"
 # Set default editor to system vim.
 alias vi=vim
 export EDITOR=vim
+
+# Only perform autocompletion on `cd` for directories.
+complete -d cd &> /dev/null
 
 # Prevent Python from writing bytecode (.pyc) files.  This is fast so the time
 # sacrifice isn't significant but it keeps file spaces clean.
@@ -59,7 +62,6 @@ if [ -d "$HOME/bin" ]; then
 
   if [ -d "$HOME/bin/rcbin" ]; then
     alias mg='$HOME/bin/rcbin//mygit.py'
-    alias pwf='$HOME/bin/rcbin/pwf.sh'
     if [ -d "$HOME/bin/rcbin/My_Python_Classes" ]; then
       export PYTHONPATH=$HOME/bin/rcbin/My_Python_Classes:$PYTHONPATH
     fi
@@ -74,6 +76,11 @@ if [ -d "$HOME/SW/$(hostname -s)" ]; then
   export SW=$HOME/SW/$(hostname -s)
   export PATH=$SW/bin:$PATH
   export LD_LIBRARY_PATH=$SW/lib:$LD_LIBRARY_PATH
+
+  # Update default editor to self-compiled vim, if available.
+  if [ -f $SW/bin/vim ]; then
+    export EDITOR=$SW/bin/vim
+  fi
 fi
 
 # Customize prompt (old style).
@@ -114,6 +121,11 @@ if [[ `uname` == 'Darwin' ]]; then
   source $HOME/.bashrc.os_darwin
 elif [[ `uname` == 'Linux' ]]; then
   source $HOME/.bashrc.os_linux
+fi
+
+if [ -f ~/.ssh/id_rsa ]; then
+  eval "$(ssh-agent -s)" &> /dev/null
+  ssh-add ~/.ssh/id_rsa &> /dev/null
 fi
 
 ################################################################################
