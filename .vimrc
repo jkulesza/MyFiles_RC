@@ -343,16 +343,16 @@ augroup END
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom Color General Options
 
-" set t_Co=256
-set background=dark
-highlight clear
-if exists("syntax on")
-	syntax reset
-endif
-
 let g:colors_name="mine"
 
 if g:colors_name == "mine"
+
+" set t_Co=256
+  set background=dark
+  highlight clear
+  if exists("syntax on")
+    syntax reset
+  endif
 
   """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   " Mine, Based on Torte Rev. 1.1
@@ -429,7 +429,8 @@ else
   " syntax enable
   " set background=dark
   " let g:solarized_termcolors=256
-  " colorscheme solarized
+  set termguicolors
+  colorscheme monokai_pro
 
 endif
 
