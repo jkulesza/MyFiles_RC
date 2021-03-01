@@ -35,7 +35,8 @@ export   ALL_PROXY=$HTTP_PROXY
 export    NO_PROXY=127.0.0.1,localhost,.local
 
 # Set ls colors.
-export LSCOLORS="exfxcxdxbxegedabagacad"
+export CLICOLOR=1
+export LSCOLORS="ExFxcxdxbxegedabagacad"
 
 # Set default editor to system vim.
 alias vi=vim

@@ -348,7 +348,7 @@ let g:colors_name="mine"
 if g:colors_name == "mine"
 
 " set t_Co=256
-  set background=dark
+" set background=dark
   highlight clear
   if exists("syntax on")
     syntax reset
@@ -429,8 +429,8 @@ else
   " syntax enable
   " set background=dark
   " let g:solarized_termcolors=256
-  set termguicolors
-  colorscheme monokai_pro
+  " set termguicolors
+  " colorscheme monokai_pro
 
 endif
 
