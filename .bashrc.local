@@ -19,7 +19,7 @@ alias cd..='cd ..'
 alias path='echo $PATH | tr ":" "\n" | cat -n'
 alias lsd='dirs | tr " " "\n"'
 alias jn='jupyter notebook'
-alias lmk='latexmk -pvc -pdf -interaction=nonstopmode '
+alias lmk='latexmk -pvc -pdf '
 
 alias 2..='cd ../..'
 alias 3..='cd ../../..'
