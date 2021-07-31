@@ -253,12 +253,12 @@ calc () {
 }
 
 rename_images() {
-  for fil in *.jpg *.JPG; do datepath="$(identify -verbose $fil \
-    | grep DateTimeOri | awk '{print $2"_"$3 }' \
-    | sed s%:%_%g)"; mv -v $fil $datepath.jpg; done
-  # for fil in *.png *.PNG; do datepath="$(identify -verbose $fil \
+  # for fil in *.jpg *.JPG; do datepath="$(identify -verbose $fil \
   #   | grep DateTimeOri | awk '{print $2"_"$3 }' \
-  #   | sed s%:%_%g)"; mv -v $fil $datepath.png; done
+  #   | sed s%:%_%g)"; mv -v $fil $datepath.jpg; done
+  for fil in *.png; do datepath="$(identify -verbose $fil \
+    | grep DateTimeOri | awk '{print $2"_"$3 }' \
+    | sed s%:%_%g)"; mv -v $fil $datepath.png; done
 }
 
 # Setup proxy toggles.
