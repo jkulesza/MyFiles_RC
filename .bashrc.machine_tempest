@@ -2,8 +2,8 @@
 
 export FC='gfortran'
 export GIT_SSH=$HOME/bin/turq-ssh-hop.sh
-export PATH="/local/brew/bin:$PATH"
-export EDITOR=/local/brew/bin/vim
+export PATH="~/Applications/brew/bin:$PATH"
+export EDITOR="~/Applications/brew/bin/vim"
 
 # Setup MCNP
 alias mcnp6='/Users/jkulesza/SRC/MCNP_CODE_61_Package/MCNP6_Original/bin/macosx/mcnp6_macosx_x86_64_omp'

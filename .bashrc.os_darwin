@@ -2,7 +2,7 @@
 
 export BREWDIR="$HOME/Applications/brew"
 export ANACONDADIR="$HOME/Applications/anaconda3"
-export HOMEBREW_CASK_OPTS="--appdir=/local"
+export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
 
 alias ls='ls -G'
 alias la='ls -al'
