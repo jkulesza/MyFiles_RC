@@ -261,6 +261,12 @@ rename_images() {
     | sed s%:%_%g)"; mv -v $fil $datepath.png; done
 }
 
+thumbnail() {
+  filename="${1%%.*}"
+  extension="${1#*.}"
+  convert -resize 400x $1 ${filename}_th400.${extension}
+}
+
 # Setup proxy toggles.
 proxyon () {
   export  HTTP_PROXY=
