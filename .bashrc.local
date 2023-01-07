@@ -8,6 +8,7 @@ fi
 ################################################################################
 
 export RCGITDIR=$HOME/MyFiles_RC
+export BREWDIR=$HOME/Applications/brew
 
 alias :q=exit
 
@@ -19,7 +20,7 @@ alias cd..='cd ..'
 alias path='echo $PATH | tr ":" "\n" | cat -n'
 alias lsd='dirs | tr " " "\n"'
 alias jn='jupyter notebook'
-alias lmk='latexmk -pvc -pdf '
+alias lmk='latexmk -pvc -pdf -interaction=nonstopmode '
 
 alias 2..='cd ../..'
 alias 3..='cd ../../..'
@@ -27,16 +28,17 @@ alias 4..='cd ../../../..'
 alias 5..='cd ../../../../..'
 alias 6..='cd ../../../../../..'
 
+# Windows-like aliases.
+alias copy='cp'
+alias dir='ls -al'
+alias del='rm'
+
 # Setup proxy.
 export  HTTP_PROXY=
 export HTTPS_PROXY=
 # Setup proxy for Homebrew.
 export   ALL_PROXY=$HTTP_PROXY
 export    NO_PROXY=127.0.0.1,localhost,.local
-
-# Set ls colors.
-export CLICOLOR=1
-export LSCOLORS="ExFxcxdxbxegedabagacad"
 
 # Set default editor to system vim.
 alias vi=vim
@@ -152,7 +154,7 @@ PROMPT_COMMAND='set_bash_prompt'
 ################################################################################
 
 # View terminal colors / color codes.
-# color() {
+# colors() {
 #    local fgc bgc vals seq0
 
 #    printf "Color escapes are %s\n" '\e[${value};...;${value}m'
@@ -177,7 +179,7 @@ PROMPT_COMMAND='set_bash_prompt'
 #       done
 #       echo;
 #    done
-# }
+# } &> /dev/null
 
 # From http://misc.flogisoft.com/bash/tip_colors_and_formatting#terminals_compatibility
 # colors16() {
@@ -192,7 +194,7 @@ PROMPT_COMMAND='set_bash_prompt'
 # 		echo #Newline
 # 	done
 # done
-# }
+# } &> /dev/null
 
 # From http://misc.flogisoft.com/bash/tip_colors_and_formatting#terminals_compatibility
 # colors256() {
@@ -207,12 +209,12 @@ PROMPT_COMMAND='set_bash_prompt'
 # 	done
 # 	echo #New line
 # done
-# }
+# } &> /dev/null
 
 # Function to truncate lines that would otherwise wrap in the terminal.
 nowrap() {
    cut -c-$(tput cols);
-}
+} &> /dev/null
 
 # Called by PROMPT_COMMAND to customize the prompt each time it is displayed.
 # This permits live updating of the current git branch (provided and styled by
@@ -279,24 +281,126 @@ proxyoff () {
   export   ALL_PROXY=
 }
 
+# Add drop-shadow effect on image.
+drop_shadow() {
+  echo "Adding drop shadow to $1..."
+  f="${1%%.*}"_drop_shado_bg_transparent."${1##*.}"
+  echo "  Generating $f with true transparency..."
+  convert $1 \
+    -trim -bordercolor white -border 0x0 \
+    \( -clone 0 -background '#888888' -shadow 80x20+0+20 \) \
+    -reverse -background none -layers merge +repage $f
+  f="${1%%.*}"_drop_shado_bg_white.jpg
+  echo "  Generating $f with white background..."
+  convert $1 \
+    -trim -bordercolor white -border 0x0 \
+    \( -clone 0 -background '#888888' -shadow 70x20+0+20 \) \
+    -reverse -background white -layers merge +repage $f
+  echo "  Done."
+}
+
+# Add drop-shadow effect on image.
+drop_shadow_bordered() {
+  echo "Adding drop shadow to $1..."
+  f="${1%%.*}"_drop_shado_bg_transparent."${1##*.}"
+  echo "  Generating $f with true transparency..."
+  convert $1 \
+    -trim -bordercolor white -border 10x10 \
+    \( -clone 0 -background '#888888' -shadow 80x20+0+20 \) \
+    -reverse -background none -layers merge +repage $f
+  f="${1%%.*}"_drop_shado_bg_white.jpg
+  echo "  Generating $f with white background..."
+  convert $1 \
+    -trim -bordercolor white -border 10x10 \
+    \( -clone 0 -background '#888888' -shadow 70x20+0+20 \) \
+    -reverse -background white -layers merge +repage $f
+  echo "  Done."
+}
+
+# Print working file (absolute path + filename).
+pwf () {
+  echo `pwd`"/$1"
+}
+
+# Stamp header/footer text on images using bc and ImageMagick.
+#   $1: filename
+#   $2: text to stamp
+#   $3: prefix
+stamp () {
+  if [ ! -f $1 ]; then
+    return -1
+  fi
+  if [ -z "$2" ]; then
+    stamptxt="Default Text"
+  else
+    stamptxt=$2
+  fi
+  if [ -z "$3" ]; then
+    stampprefix="stamped_"
+  else
+    stampprefix="${3}_"
+  fi
+
+  wd=`identify -format %w $1`
+  ht=`identify -format %h $1`
+  pt=`bc <<< 0.02*$ht/0.75`
+  marginbot=`bc <<< 0.5*$pt`
+  margintop=`bc <<< 1.25*$pt`
+
+  echo "Stamping ${stamptxt} onto ${stampprefix}$1..."
+  convert \
+    -pointsize $pt \
+    -fill '#ff0000ff' \
+    -gravity north -annotate +0+$margintop "${stamptxt}" \
+    -gravity south -annotate +0+$marginbot "${stamptxt}" \
+    $1 ${stampprefix}$1
+}
+
+# Draw red arrow on image.
+#   $1: filename
+#   $2: x coordinate of arrowhead tip
+#   $3: y coordinate of arrowhead tip
+#   $4: rotation angle of arrow (default: 0 degrees)
+imdraw_arrow () {
+  if [ ! -f $1 ]; then
+    return -1
+  fi
+
+  wd=`identify -format %w $1`
+  ht=`identify -format %h $1`
+
+  x=${2:-100}
+  y=${3:-100}
+  r=${4:-0}
+  l=`bc <<< "0.050*sqrt(${wd}*${wd}+${ht}*${ht})"`
+  sa=`bc <<< "0.002*sqrt(${wd}*${wd}+${ht}*${ht})"`
+  sl=`bc <<< "0.004*sqrt(${wd}*${wd}+${ht}*${ht})"`
+  xb=`bc -l <<< "${x}-${l}*c(${r}*0.0174533)"`
+  yb=`bc -l <<< "${x}-${l}*s(${r}*0.0174533)"`
+
+  vector_arrowhead="path 'M 0,0 l -15,-5 +5,+5 -5,+5 +15,-5 z'"
+
+  convert $1 \
+    -draw " stroke red fill red
+            stroke-width ${sl}
+            line ${x},${y} ${xb},${yb}
+            stroke-width ${sa}
+            translate ${x},${y} rotate ${r} scale 2,2
+            ${vector_arrowhead}
+          " \
+    $1
+}
+
+pdf_join () {
+  gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -dSAFER -sOutputFile=$1 ${@:2}
+}
+
+rename_remove_spaces () {
+  mv "$1" `echo $1 | tr ' ' '_'`
+}
+
 syncmusic() {
   rsync -avzPc --delete ~/Dropbox/MUSIC/* /Volumes/MUSIC/.
   cd /Volumes/MUSIC && rm -rf .Spotlight-V100 .fseventsd .Trashes
 }
 
-# added by Anaconda3 2018.12 installer
-# >>> conda init >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$(CONDA_REPORT_ERRORS=false '/local/anaconda3/bin/conda' shell.bash hook 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    \eval "$__conda_setup"
-else
-    if [ -f "/local/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/local/anaconda3/etc/profile.d/conda.sh"
-        CONDA_CHANGEPS1=false conda activate base
-    else
-        \export PATH="/local/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda init <<<

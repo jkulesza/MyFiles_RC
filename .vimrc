@@ -22,6 +22,9 @@ autocmd VimEnter *
 \|   endif
 \| endif
 
+" Add fzf.
+set rtp+=$HOME/Applications/brew/opt/fzf
+
                                                                                                                      " }}}
                                                                                                                      " Preliminaries {{{
 nnoremap <SPACE> <Nop>
@@ -36,6 +39,8 @@ set encoding=utf-8 fileencoding=utf-8 termencoding=utf-8                        
 set timeoutlen=1000 ttimeoutlen=0                                                                                       " Set timeout lengths for 'esc'
 set hidden                                                                                                              " Set ability to edit multiple files with :bufdo
 set lazyredraw                                                                                                          " Don't redraw the screen while executing non-typed commands
+set nomore                                                                                                              " Disable pager to prevent stoppages during bulk operations
+set re=1                                                                                                                " Chagne RegEx engine (seems faster for Fortran with syntax highlighting)
 set viminfo='100,f1                                                                                                     " Save marks for last 100 files, save global marks
                                                                                                                      " }}}
                                                                                                                      " Backup / Swap / Undo File Behavior {{{
@@ -63,13 +68,15 @@ set smartindent                                                                 
 
 set tabstop=2                                                                                                           " Set tab width to 2 spaces
 set shiftwidth=2                                                                                                        " Set indent width to 2 spaces
+set shiftround                                                                                                          " Round indenting to nearest shiftwidth
 set softtabstop=2                                                                                                       " Set soft tab stop to 2 spaces
 set expandtab                                                                                                           " Turn tabs into spaces
-autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()                                                             " Automatically strip trailing whitespace from all lines upon save
+autocmd BufWritePre * :call StripTrailingWhitespaces()                                                             " Automatically strip trailing whitespace from all lines upon save
 
 let perl_fold=1                                                                                                         " Fold Perl subroutines
 let fortran_free_source=1                                                                                               " Assume free-format Fortran by default
 let fortran_fold=1                                                                                                      " Permit Fortran folding by default
+let fortran_have_tabs=1                                                                                                 " Correct highlighting per https://stackoverflow.com/a/9505434/5059002
 let g:markdown_folding=1                                                                                                " Permit markdown folding by default
 set foldopen-=block
                                                                                                                      " }}}
@@ -98,7 +105,7 @@ set winaltkeys=no                                                               
                                                                                                                      " }}}
                                                                                                                      " Status Line {{{
 set laststatus=2                                                                                                        " Always show status line
-set statusline=
+set statusline=                                                                                                         " Rset stats line to nothing
 set statusline+=%{exists('g:loaded_fugitive')?fugitive#statusline():''}                                                 " Show fugitive, if it's available
 set statusline+=[%{strlen(&fenc)?&fenc:&enc}]                                                                           " File Encoding
 set statusline+=%y                                                                                                      " File Type
@@ -115,6 +122,7 @@ let g:netrw_sort_sequence=''                                                    
 let g:netrw_sort_options='i'                                                                                            " Sort truly alphabetically (case insensitively)
 let g:netrw_liststyle='1'                                                                                               " List with sizes / dates (long)
 let g:netrw_keepdir='0'                                                                                                 " Let netrw directory wander from the current working directory
+let g:netrw_maxfilenamelen=72                                                                                           " Let netrw service longer file names than the default
                                                                                                                      " }}}
                                                                                                                      " Perform Coloring of Programming Danger Zone {{{
 set cursorline                                                                                                          " Highlight the current line
@@ -171,6 +179,9 @@ if (v:version>=801)
   tnoremap <C-h> <C-w>h
   tnoremap <C-l> <C-w>l
 endif
+
+" Map fuzzy find to space-space double tap.
+nnoremap <leader><Space> :FZF<CR>
 
 " Popup menu up/down navigation with j and k (not just Ctrl-N / Ctrl-P)
 inoremap <expr> j pumvisible() ? "\<C-N>" : "j"
@@ -288,7 +299,7 @@ autocmd FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1
 
 " Strip trailing whitespace and return cursor to previous position.
 " http://stackoverflow.com/questions/35390415/cursor-jump-in-vim-after-save
-function! <SID>StripTrailingWhitespaces()
+function! StripTrailingWhitespaces()
   let blacklist = ['lyx']
   if index(blacklist, &filetype) == 0
     echom "Remark: did not strip end-of-line white space on write."
@@ -320,8 +331,6 @@ endfun
 "   \|    silent loadview
 "   \|  endif
 " augroup END
-
-                                                                                                                     " }}}
                                                                                                                      " Load Skeleton Files {{{
 augroup Shebang
 
@@ -342,26 +351,25 @@ augroup END
                                                                                                                      " Colorschemes {{{
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom Color General Options
+"
+" set t_Co=256
+" set background=dark
+highlight clear
+if exists("syntax on")
+  syntax reset
+endif
 
 let g:colors_name="mine"
 
 if g:colors_name == "mine"
 
-" set t_Co=256
-" set background=dark
-  highlight clear
-  if exists("syntax on")
-    syntax reset
-  endif
-
   """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   " Mine, Based on Torte Rev. 1.1
   " Maintainer:  Joel Kulesza <jkulesza@lanl.gov>
   "
-
   hi ColorColumn       guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
-  hi Comment           guifg=#0087ff       guibg=NONE          gui=NONE            ctermfg=033         ctermbg=NONE        cterm=NONE
-  hi Constant          guifg=#ffa0a0       guibg=NONE          gui=NONE            ctermfg=013         ctermbg=NONE        cterm=NONE
+  hi Comment           guifg=#0087ff       guibg=Black         gui=NONE            ctermfg=033         ctermbg=016         cterm=NONE
+  hi Constant          guifg=#dadada       guibg=Black         gui=NONE            ctermfg=013         ctermbg=016         cterm=NONE
   hi Cursor            guifg=Black         guibg=#00ff00       gui=NONE            ctermfg=Black       ctermbg=010         cterm=NONE
   hi CursorColumn      guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
   hi CursorLine        guifg=NONE          guibg=NONE          gui=UNDERLINE       ctermfg=NONE        ctermbg=NONE        cterm=UNDERLINE
@@ -370,26 +378,29 @@ if g:colors_name == "mine"
   hi DiffDelete        guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=052         cterm=NONE
   hi DiffText          guifg=NONE          guibg=#5f0000       gui=NONE            ctermfg=NONE        ctermbg=163         cterm=NONE
   hi Folded            guifg=NONE          guibg=#121212       gui=NONE            ctermfg=NONE        ctermbg=233         cterm=NONE
-  hi Identifier        guifg=#40ffff       guibg=NONE          gui=NONE            ctermfg=014         ctermbg=NONE        cterm=NONE
+  hi Identifier        guifg=#40ffff       guibg=Black         gui=NONE            ctermfg=014         ctermbg=016         cterm=NONE
   hi IncSearch         guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
-  hi Normal            guifg=#dadada       guibg=Black         gui=NONE            ctermfg=252         ctermbg=Black       cterm=NONE
+  hi Keyword           guifg=#ff005f       guibg=Black         gui=ITALIC          ctermfg=197         ctermbg=016         cterm=NONE
+  hi Normal            guifg=#dadada       guibg=Black         gui=NONE            ctermfg=252         ctermbg=016         cterm=NONE
+  hi Operator          guifg=#ff8700       guibg=Black         gui=NONE            ctermfg=208         ctermbg=016         cterm=NONE
   hi Pmenu             guifg=NONE          guibg=#080808       gui=NONE            ctermfg=NONE        ctermbg=232         cterm=NONE
   hi PmenuSel          guifg=NONE          guibg=#262626       gui=NONE            ctermfg=NONE        ctermbg=235         cterm=NONE
-  hi PreProc           guifg=#ff80ff       guibg=NONE          gui=NONE            ctermfg=081         ctermbg=NONE        cterm=NONE
+  hi PreProc           guifg=#ff80ff       guibg=Black         gui=NONE            ctermfg=081         ctermbg=016         cterm=NONE
   hi Search            guifg=Black         guibg=#d0d0d0       gui=NONE            ctermfg=Black       ctermbg=252         cterm=NONE
-  hi Special           guifg=#af5f00       guibg=NONE          gui=NONE            ctermfg=130         ctermbg=NONE        cterm=NONE
+  hi Special           guifg=#af5f00       guibg=Black         gui=NONE            ctermfg=130         ctermbg=016         cterm=NONE
   hi SpellBad          guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
   hi SpellCap          guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
   hi SpellLocal        guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
   hi SpellRare         guifg=NONE          guibg=#444444       gui=UNDERCURL       ctermfg=NONE        ctermbg=124         cterm=UNDERLINE
-  hi Statement         guifg=#ffff00       guibg=NONE          gui=NONE            ctermfg=226         ctermbg=NONE        cterm=NONE
+  hi Statement         guifg=#ffff00       guibg=Black         gui=NONE            ctermfg=226         ctermbg=016         cterm=NONE
   hi StatusLine        guifg=White         guibg=#262626       gui=NONE            ctermfg=White       ctermbg=235         cterm=NONE
   hi StatusLineNC      guifg=#3a3a3a       guibg=#080808       gui=NONE            ctermfg=237         ctermbg=232         cterm=NONE
   hi StatusLineTerm    guifg=White         guibg=#262626       gui=NONE            ctermfg=White       ctermbg=235         cterm=NONE
   hi StatusLineTermNC  guifg=#3a3a3a       guibg=#080808       gui=NONE            ctermfg=237         ctermbg=232         cterm=NONE
-  hi Type              guifg=#60ff60       guibg=NONE          gui=NONE            ctermfg=121         ctermbg=NONE        cterm=NONE
+  hi Type              guifg=#60ff60       guibg=Black         gui=NONE            ctermfg=121         ctermbg=016         cterm=NONE
   hi VertSplit         guifg=#808080       guibg=#262626       gui=NONE            ctermfg=232         ctermbg=235         cterm=NONE
   hi Visual            guifg=Black         guibg=#949494       gui=NONE            ctermfg=Black       ctermbg=246         cterm=NONE
+
   set fillchars+=vert:\ " Remove pipes from vertical split delimiter
 
   " Highlight the status bar when in insert mode (https://github.com/chrishunt/dot-files/blob/master/.vimrc).
@@ -408,8 +419,8 @@ if g:colors_name == "mine"
   hi link Conditional    Statement
   hi link Repeat         Statement
   hi link Label          Statement
-  hi link Operator       Statement
-  hi link Keyword        Statement
+  hi link Operator       Operator
+  hi link Keyword        Keyword
   hi link Exception      Statement
   hi link Include        PreProc
   hi link Define         PreProc
@@ -423,14 +434,6 @@ if g:colors_name == "mine"
   hi link Delimiter      Special
   hi link SpecialComment Special
   hi link Debug          Special
-
-else
-
-  " syntax enable
-  " set background=dark
-  " let g:solarized_termcolors=256
-  " set termguicolors
-  " colorscheme monokai_pro
 
 endif
 
