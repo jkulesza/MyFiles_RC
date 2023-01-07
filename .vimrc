@@ -200,7 +200,7 @@ map <F7> :setlocal spell! spelllang=en_us<CR>"                                  
 set spellcapcheck=                                                                                                    " Disable Spell Checking for Capitalization
 map <F8> :set makeprg=proselint\ %<CR>:silent make!\|redraw!\|cw<CR>"                                                   Run proselint on Current File and open quickfix list
 
-map <F9> :set ft=mcnp<CR>"                                                                                              Setup for MCNP syntax highlighting
+map <F9> :set ft=mcnp<CR>"                                                                                              Set MCNP syntax highlighting
 "map <F10>
 "map <F11>
 "map <F12>
@@ -351,7 +351,7 @@ augroup END
                                                                                                                      " Colorschemes {{{
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom Color General Options
-"
+
 " set t_Co=256
 " set background=dark
 highlight clear
