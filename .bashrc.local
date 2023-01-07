@@ -376,18 +376,18 @@ imdraw_arrow() {
   sa=`bc <<< "0.002*sqrt(${wd}*${wd}+${ht}*${ht})"`
   sl=`bc <<< "0.004*sqrt(${wd}*${wd}+${ht}*${ht})"`
   xb=`bc -l <<< "${x}-${l}*c(${r}*0.0174533)"`
-  yb=`bc -l <<< "${x}-${l}*s(${r}*0.0174533)"`
+  yb=`bc -l <<< "${y}-${l}*s(${r}*0.0174533)"`
 
   vector_arrowhead="path 'M 0,0 l -15,-5 +5,+5 -5,+5 +15,-5 z'"
 
   convert $1 \
-    -draw " stroke red fill red
-            stroke-width ${sl}
-            line ${x},${y} ${xb},${yb}
-            stroke-width ${sa}
-            translate ${x},${y} rotate ${r} scale 2,2
-            ${vector_arrowhead}
-          " \
+          -draw " stroke red fill red
+                  stroke-width ${sl}
+                  line ${x},${y} ${xb},${yb}
+                  stroke-width ${sa}
+                  translate ${x},${y} rotate ${r} scale 2,2
+                  ${vector_arrowhead}
+                " \
     $1
 }
 
