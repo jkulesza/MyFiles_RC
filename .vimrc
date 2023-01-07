@@ -353,7 +353,7 @@ augroup END
 " Custom Color General Options
 
 " set t_Co=256
-" set background=dark
+set background=dark
 highlight clear
 if exists("syntax on")
   syntax reset
