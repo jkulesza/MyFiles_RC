@@ -28,8 +28,8 @@ set rtp+=$HOME/Applications/brew/opt/fzf
                                                                                                                      " }}}
                                                                                                                      " Preliminaries {{{
 nnoremap <SPACE> <Nop>
-" let mapleader=","                                                                                                       " Use a consenus 'better' leader key
-" let maplocalleader=","                                                                                                  " Use a consenus 'better' leader key
+let mapleader=" "                                                                                                       " Use a 'better' leader key
+let maplocalleader=" "                                                                                                  " Use a 'better' leader key
 syntax on                                                                                                               " Enable syntax highlighting
 let g:python_highlight_all = 1
 filetype plugin on                                                                                                      " Enable filetype-specific plugin loading (e.g., for nerdcommenter)
@@ -61,7 +61,7 @@ set formatlistpat+=\\\|^\\*\\s*                                                 
 if exists ("set breakindent")
 	set breakindent                                                                                                       " Maintain indentation with autowrapping text
 endif
-set noautoindent                                                                                                        " Do not unconditionally autoindent text without comment characters
+set autoindent                                                                                                          " Do not unconditionally autoindent text without comment characters
 set nocindent                                                                                                           " Do not indent for coding
 set smartindent                                                                                                         " Anticipate indentation
 "set paste                                                                                                               " Do not indent pasted text
@@ -71,12 +71,12 @@ set shiftwidth=2                                                                
 set shiftround                                                                                                          " Round indenting to nearest shiftwidth
 set softtabstop=2                                                                                                       " Set soft tab stop to 2 spaces
 set expandtab                                                                                                           " Turn tabs into spaces
-autocmd BufWritePre * :call StripTrailingWhitespaces()                                                             " Automatically strip trailing whitespace from all lines upon save
+autocmd BufWritePre * call StripTrailingWhitespaces()                                                                   " Automatically strip trailing whitespace from all lines upon save
 
 let perl_fold=1                                                                                                         " Fold Perl subroutines
 let fortran_free_source=1                                                                                               " Assume free-format Fortran by default
-let fortran_fold=1                                                                                                      " Permit Fortran folding by default
 let fortran_have_tabs=1                                                                                                 " Correct highlighting per https://stackoverflow.com/a/9505434/5059002
+let fortran_fold=1                                                                                                      " Permit Fortran folding by default
 let g:markdown_folding=1                                                                                                " Permit markdown folding by default
 set foldopen-=block
                                                                                                                      " }}}
@@ -105,12 +105,12 @@ set winaltkeys=no                                                               
                                                                                                                      " }}}
                                                                                                                      " Status Line {{{
 set laststatus=2                                                                                                        " Always show status line
-set statusline=                                                                                                         " Rset stats line to nothing
+set statusline=                                                                                                         " Reset status line to nothing
 set statusline+=%{exists('g:loaded_fugitive')?fugitive#statusline():''}                                                 " Show fugitive, if it's available
 set statusline+=[%{strlen(&fenc)?&fenc:&enc}]                                                                           " File Encoding
-set statusline+=%y                                                                                                      " File Type
+set statusline+=%y                                                                                                      " Filetype
 set statusline+=[%F%m%r%h%w]                                                                                            " Filename and editing status
-set statusline+=%=[%l,%v][%p%%][LEN=%L]                                                                                 " Position & length information
+set statusline+=%=[%l,%v][%p%%][LEN=%L]                                                                                 " Position and length information
                                                                                                                      " }}}
                                                                                                                      " Printing Options {{{
 set printheader=%<%F%m%=Page\ %N                                                                                        " Configure hardcopy header
