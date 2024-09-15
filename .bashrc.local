@@ -258,7 +258,7 @@ rename_images() {
   # for fil in *.jpg *.JPG; do datepath="$(identify -verbose $fil \
   #   | grep DateTimeOri | awk '{print $2"_"$3 }' \
   #   | sed s%:%_%g)"; mv -v $fil $datepath.jpg; done
-  for fil in *.png; do datepath="$(identify -verbose $fil \
+  for fil in "$@"; do datepath="$(identify -verbose $fil \
     | grep DateTimeOri | awk '{print $2"_"$3 }' \
     | sed s%:%_%g)"; mv -v $fil $datepath.png; done
 }
@@ -401,6 +401,6 @@ rename_remove_spaces() {
 
 syncmusic() {
   rsync -avzPc --delete ~/Dropbox/MUSIC/* /Volumes/MUSIC/.
-  cd /Volumes/MUSIC && rm -rf .Spotlight-V100 .fseventsd .Trashes
+  cd /Volumes/MUSIC && rm -rf .Spotlight-V100 .fseventsd .Trashes .DS_Store
 }
 
