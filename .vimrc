@@ -36,11 +36,11 @@ filetype plugin on                                                              
 set nocompatible                                                                                                        " This is vim, not vi...
 set fileformat=unix                                                                                                     " Set UNIX file format
 set encoding=utf-8 fileencoding=utf-8 termencoding=utf-8                                                                " Set file encodings
-set timeoutlen=1000 ttimeoutlen=0                                                                                       " Set timeout lengths for 'esc'
+"set timeoutlen=1000 ttimeoutlen=0                                                                                       " Set timeout lengths for 'esc'
 set hidden                                                                                                              " Set ability to edit multiple files with :bufdo
 set lazyredraw                                                                                                          " Don't redraw the screen while executing non-typed commands
 set nomore                                                                                                              " Disable pager to prevent stoppages during bulk operations
-set re=1                                                                                                                " Chagne RegEx engine (seems faster for Fortran with syntax highlighting)
+set re=1                                                                                                                " Change RegEx engine (seems faster for Fortran with syntax highlighting)
 set viminfo='100,f1                                                                                                     " Save marks for last 100 files, save global marks
                                                                                                                      " }}}
                                                                                                                      " Backup / Swap / Undo File Behavior {{{
@@ -54,9 +54,9 @@ silent !mkdir ~/.vim_undo > /dev/null 2>&1
                                                                                                                      " Linewrapping & Text Formatting {{{
 set nowrap                                                                                                              " Do not wrap text (in the display) by default
 set textwidth=80                                                                                                        " Wrap text after 80 columns
-set formatoptions=lcroqnj                                                                                               " Wrap lines with whitespace, but do not insert line breaks
-set linebreak                                                                                                           " Wrap lines with whitespace, but do not insert line breaks
-set formatlistpat+=\\\|^\\*\\s*                                                                                         " Recognize asterices as list items
+set formatoptions=lcroqnj                                                                                               " Wrap lines with white space, but do not insert line breaks
+set linebreak                                                                                                           " Wrap lines with white space, but do not insert line breaks
+set formatlistpat+=\\\|^\\*\\s*                                                                                         " Recognize asterisks as list items
 
 if exists ("set breakindent")
 	set breakindent                                                                                                       " Maintain indentation with autowrapping text
@@ -109,12 +109,12 @@ set statusline=                                                                 
 set statusline+=%{exists('g:loaded_fugitive')?fugitive#statusline():''}                                                 " Show fugitive, if it's available
 set statusline+=[%{strlen(&fenc)?&fenc:&enc}]                                                                           " File Encoding
 set statusline+=%y                                                                                                      " Filetype
-set statusline+=[%F%m%r%h%w]                                                                                            " Filename and editing status
+set statusline+=[%F%m%r%h%w]                                                                                            " File name and editing status
 set statusline+=%=[%l,%v][%p%%][LEN=%L]                                                                                 " Position and length information
                                                                                                                      " }}}
                                                                                                                      " Printing Options {{{
-set printheader=%<%F%m%=Page\ %N                                                                                        " Configure hardcopy header
-set printfont=courier_new:h8:w5                                                                                         " Configure hardcopy appearance
+set printheader=%<%F%m%=Page\ %N                                                                                        " Configure hard copy header
+set printfont=courier_new:h8:w5                                                                                         " Configure hard copy appearance
 set printoptions=paper:letter,portrait:n,left:0.25in,right:0.25in,top:0.25in,bottom:0.25in
                                                                                                                      " }}}
                                                                                                                      " netrw Behavior {{{
@@ -144,7 +144,7 @@ autocmd Filetype cpp setlocal textwidth=80 foldmethod=syntax foldnestmax=1      
 autocmd Filetype fortran setlocal textwidth=80 foldmethod=syntax                                                        " Treat Fortran specially
 autocmd Filetype gitcommit setlocal spell textwidth=72                                                                  " Setup editing to work with git
 autocmd Filetype make setlocal noexpandtab                                                                              " Don't expandtab for makefiles
-autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4                                                   " Change tab behavior to accomodate Python style guidance
+autocmd Filetype python setlocal shiftwidth=4 tabstop=4 softtabstop=4                                                   " Change tab behavior to accommodate Python style guidance
 autocmd BufNewFile,BufFilePre,BufRead *.md setlocal filetype=markdown                                                   " Enable markdown behavior for .md files
 autocmd BufNewFile,BufRead,BufEnter *.lyx set filetype=lyx                                                              " Manually set LyX filetypes, mainly to avoid end of line fixups
 autocmd BufRead *.vimrc set foldmethod=marker                                                                           " Fold the .vimrc properly
