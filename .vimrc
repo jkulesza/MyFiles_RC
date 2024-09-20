@@ -36,7 +36,7 @@ filetype plugin on                                                              
 set nocompatible                                                                                                        " This is vim, not vi...
 set fileformat=unix                                                                                                     " Set UNIX file format
 set encoding=utf-8 fileencoding=utf-8 termencoding=utf-8                                                                " Set file encodings
-"set timeoutlen=1000 ttimeoutlen=0                                                                                       " Set timeout lengths for 'esc'
+set timeoutlen=10 ttimeoutlen=10                                                                                        " Set timeout lengths for 'esc'
 set hidden                                                                                                              " Set ability to edit multiple files with :bufdo
 set lazyredraw                                                                                                          " Don't redraw the screen while executing non-typed commands
 set nomore                                                                                                              " Disable pager to prevent stoppages during bulk operations
