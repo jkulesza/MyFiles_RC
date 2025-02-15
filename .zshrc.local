@@ -69,6 +69,6 @@ bindkey "^[OB" history-beginning-search-forward
 
 export CLICOLOR=1
 export LSCOLORS="ExFxcxdxbxegedabagacad"
-export PATH=$HOME/Applications/anaconda3/bin:$PATH
+export PATH=$ANACONDADIR/bin:$PATH
 export PATH=$HOME/Applications/brew/bin:$PATH
 
