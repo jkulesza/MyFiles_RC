@@ -404,3 +404,20 @@ syncmusic() {
   cd /Volumes/MUSIC && rm -rf .Spotlight-V100 .fseventsd .Trashes .DS_Store
 }
 
+rename_fidelity() {
+    for file in Statement*.pdf; do
+        if [[ $file =~ Statement([0-9]{1,2})([0-9]{2})([0-9]{4}).pdf ]]; then
+            if [ -n "${BASH_VERSION:-}" ]; then
+                month=${BASH_REMATCH[1]}
+                day=${BASH_REMATCH[2]}
+                year=${BASH_REMATCH[3]}
+            elif [ -n "${ZSH_VERSION:-}" ]; then
+                month=${match[1]}
+                day=${match[2]}
+                year=${match[3]}
+            fi
+            new_file="Statement_${year}_$(printf "%02d" $month)_${day}.pdf"
+            mv "$file" "$new_file"
+        fi
+    done
+}
