@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export BREWDIR="$HOME/Applications/brew"
+export BREWDIR="/opt/homebrew"
 export ANACONDADIR="$HOME/Applications/anaconda312_2024_10"
 export HOMEBREW_CASK_OPTS="--appdir=$HOME/Applications"
 
@@ -9,6 +9,8 @@ alias la='ls -al'
 alias resetlaunchpad="defaults write com.apple.dock ResetLaunchPad -bool true; killall Dock"
 alias resetmail="defaults write com.apple.mail DisableInlineAttachmentViewing -bool False"
 alias resetcamera="sudo killall VDCAssistant"
+
+export PATH=$BREWDIR/bin:$PATH
 
 if [ -d $HOME/Applications/LyX.app/Contents/MacOS ]; then
   export PATH=$HOME/Applications/LyX.app/Contents/MacOS:$PATH
